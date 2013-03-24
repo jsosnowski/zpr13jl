@@ -1,0 +1,48 @@
+\documentclass[10pt,a4paper]{report}
+%\usepackage[latin1]{inputenc}
+%\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[polish]{babel}
+\author{Jacek Sosnowski, Łukasz Gadawski}
+\title{Dokumentacja wstępna}
+\begin{document}
+\maketitle
+
+\begin{enumerate}
+\item Opis projektu \\
+Projekt będzie realizowal grę sieciową dostępną dla użytkownika z poziomu przeglądarki.
+Planowaną grą jest kółko i krzyżyk na zasadach opisanych na http://pl.wikipedia.org/wiki/K%C3%B3%C5%82ko_i_krzy%C5%BCyk .
+Wybrana została klasyczna odmiana bez rozszerzeń na planszy 3x3. Aplikacja będzie zrealizowana w architekturze klient-serwer.
+
+\item Szczegółowy opis gry \\
+Użytkownik będzie rozpoczynał grę poprzez podanie swojego identyfikatora. Następnie wyświetlona zostanie lista osób, 
+które są dostępne na serwerze. Po czym będzie mógł wysłać zaproszenie do rozgrywki dla wybranej osoby. Akceptacja
+zaproszenia będzie powodowałą rozpoczęcie rywalizacji. \\
+Użytkownik za wygraną partie otrzyma 3 punkty, za remis 1, natomiast za przegraną nie otrzyma żadnych punktów. 
+Dorobek gracza będzie przechowywany na liście rankingowej znajdującej się na serwerze. 
+
+\item Założenia projektowe	\\
+Aplikacja będzie 
+\begin{enumerate}
+\item wykorzystywała przeglądarkę jako interfejs graficzny (realizacja koncepcji cienkiego klienta)
+\item uruchamiana na serwerze http dostarczanym przez bibliotekę WT
+\item posiadała interfejs formatowany poprzez style CSS
+\item wykorzystywała wielowątkowość
+\item przenośna między różnymi platformami
+\item funkcjonowała w sieci lokalnej lub w sieci internet pod warunkiem dostępności publicznego adresu IP dla serwera
+\item wykorzystywała IP wersji 4
+\end{enumerate}
+
+\item Wykorzysytywane biblioteki
+\begin{enumerate}
+\item Boost 
+\item WT(WebToolkit) http://www.webtoolkit.eu/wt
+\item STL
+\end{enumerate}
+
+\item Testowanie
+Planowane jest wykorzystanie testów jednostkowych z biblioteki boost. 
+\end{enumerate}
+
+\end{document}
