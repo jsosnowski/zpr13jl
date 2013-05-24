@@ -19,4 +19,4 @@ env.Append(LIBS=[
 env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 
 # Compile and link the binary
-env.Program('hello',['exa.cc'])
+env.Program('test',['GameApp.cpp' , 'GameServer.h', 'GameServer.cpp', 'GameWidget.h', 'GameWidget.cpp'])
