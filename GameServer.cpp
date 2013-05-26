@@ -35,6 +35,41 @@ bool GameServer::connect(Client *client,
     return false;
 }
 
+bool GameServer::initGame(Client *client, const Wt::WString &clientName, const Wt::WString &oponent) 
+{
+	boost::recursive_mutex::scoped_lock lock(mutex_);
+
+	//if client has already fight with somebody
+	if (fighters_.count(client) != 0)
+		return false;
+	//if client wants to fight with somebody who doesn't exists
+	if (names_clients_.count(oponent) != 1)
+		return false;
+
+	// find opnents identifier
+	Client* op = names_clients_[oponent];
+	if (fighters_.count(op) != 0)
+		return false;
+	
+	// link client with oponents
+	prepareFighters_[client] = op;
+	prepareFighters_[op] = client;
+
+	postGEvent(GEvent(GEvent::Type::GOffer, clientName), clients_[client].sessionId);
+
+	return true;
+}
+
+bool GameServer::initGameAns(Client *client, const GEvent::Type ans, const Wt::WString &clientName, const Wt::WString &oponent)
+{
+	if (ans == GEvent::Type::GAccept)
+		postGEvent(GEvent(GEvent::Type::GAccept, clientName), clients_[client].sessionId);
+	else
+		postGEvent(GEvent(GEvent::Type::GReject, clientName), clients_[client].sessionId);
+
+	return true;
+}
+
 bool GameServer::disconnect(Client *client)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
@@ -138,6 +173,24 @@ void GameServer::postGEvent(const GEvent& event)
     else
       server_.post(i->second.sessionId,
 		   boost::bind(i->second.eventCallback, event));
+  }
+}
+
+void GameServer::postGEvent(const GEvent& event, const std::string &toSession)
+{
+  boost::recursive_mutex::scoped_lock lock(mutex_);
+
+  WApplication *app = WApplication::instance();
+
+  for (ClientMap::const_iterator i = clients_.begin(); i != clients_.end();
+       ++i) {
+
+    if (app && app->sessionId() == i->second.sessionId)
+      i->second.eventCallback(event);
+    else
+		if (i->second.sessionId == toSession)
+			server_.post(i->second.sessionId,
+				boost::bind(i->second.eventCallback, event));
   }
 }
 

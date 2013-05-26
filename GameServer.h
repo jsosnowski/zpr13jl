@@ -56,6 +56,13 @@ public:
    */
   bool connect(Client *client, const GameEventCallback& handleEvent);
 
+  bool initGame(Client *client, const Wt::WString &clientName, const Wt::WString &oponent);
+
+  /**
+  * @brief Client answers that want fight or that no want fight with oponent
+  **/
+  bool initGameAns(Client *client, const GEvent::Type ans, const Wt::WString &clientName, const Wt::WString &oponent);
+
   /*! \brief Disconnect from the chat server.
    *
    * Returns whether the client has been disconnected (or false if the client
@@ -101,13 +108,27 @@ private:
   };
 
   typedef std::map<Client *, ClientInfo> ClientMap;
+  typedef std::map<Wt::WString, Client *> NameClientMap;
+  typedef std::map<Client *, Client *> FightersMap;
 
   Wt::WServer& server_;
   boost::recursive_mutex mutex_;
   ClientMap clients_;
   UserSet users_;
+  NameClientMap names_clients_;
+
+
+
+  FightersMap fighters_;
+  FightersMap prepareFighters_;
+
 
   void postGEvent(const GEvent& event);
+  /**
+  * @brief Send message direct into given session.
+  *
+  **/
+  void postGEvent(const GEvent& event, const std::string &toSession);
 };
 
 /*@}*/
