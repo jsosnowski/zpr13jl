@@ -4,6 +4,10 @@
  * See the LICENSE file for terms of use.
  */
 
+#include <functional>
+
+#include <boost/foreach.hpp>
+
 #include "GameWidget.h"
 #include "GameServer.h"
 
@@ -18,6 +22,7 @@
 #include <Wt/WTextArea>
 #include <Wt/WPushButton>
 #include <Wt/WCheckBox>
+#include <Wt/WSelectionBox>
 
 #include <iostream>
 
@@ -29,7 +34,8 @@ GameWidget::GameWidget(GameServer& server,
     server_(server),
     loggedIn_(false),
     userList_(0),
-    messageReceived_(0)
+    messageReceived_(0),
+    userBox_(0)
 {
   user_ = server_.suggestGuest();
   letLogin();
@@ -303,7 +309,7 @@ void GameWidget::send()
     server_.sendMessage(user_, messageEdit_->text());
 }
 
-void GameWidget::updateUsers()
+void GameWidget::updateUsersOld()
 {
   if (userList_) {
     userList_->clear();
@@ -316,6 +322,7 @@ void GameWidget::updateUsers()
     for (GameServer::UserSet::iterator i = users.begin();
 	 i != users.end(); ++i) {
       WCheckBox *w = new WCheckBox(escapeText(*i), userList_);
+
       w->setInline(false);
 
       UserMap::const_iterator j = oldUsers.find(*i);
@@ -325,7 +332,7 @@ void GameWidget::updateUsers()
 	w->setChecked(true);
 
       users_[*i] = w->isChecked();
-      w->changed().connect(this, &GameWidget::updateUser);
+      w->changed().connect(this, &GameWidget::updateUserOld);
 
       if (*i == user_)
 	w->setStyleClass("chat-self");
@@ -333,14 +340,87 @@ void GameWidget::updateUsers()
   }
 }
 
+void GameWidget::updateUsers()
+{
+	if (userList_)
+	{
+		userList_->clear();
+		userBox_ = new WSelectionBox(userList_);
+
+		inviteButton = new WPushButton("Send invitation", userList_);
+
+		GameServer::UserSet users = server_.users();
+
+		std::for_each(users.begin(), users.end(), [&](Wt::WString u)
+		{
+			userBox_->addItem(u);
+		});
+
+		userBox_->activated().connect(
+				this, &GameWidget::inviteClick);
+		inviteButton->clicked().connect(
+				this, &GameWidget::sendInvitation);
+		//		BOOST_FOREACH(Wt::WString i, users)
+//		{
+//			std::cout << "ilosc: " << users.size() << std::endl;
+//			userBox_->addItem(i);
+//		}
+
+//		UserMap oldUsers = users_;
+//		users_.clear();
+//
+//		for (GameServer::UserSet::iterator i = users.begin();
+//		 i != users.end(); ++i)
+//		{
+//	      WCheckBox *w = new WCheckBox(escapeText(*i), userList_);
+//	      w->setInline(false);
+//
+//	      UserMap::const_iterator j = oldUsers.find(*i);
+//	      if (j != oldUsers.end())
+//	    	 w->setChecked(j->second);
+//	      else
+//	    	  w->setChecked(true);
+//
+//	      users_[*i] = w->isChecked();
+//	      users_[*i] = true;
+//	      w->changed().connect(this, &GameWidget::updateUser);
+//
+//	      if (*i == user_)
+//		w->setStyleClass("chat-self");
+//		}
+	}
+}
+
+void GameWidget::sendInvitation()
+{
+
+}
+
+void GameWidget::inviteClick()
+{
+	std::cout << std::endl;
+	std::cout << "$$$$$$$$$$$ clicked $$$$$$$$$$";
+	std::cout << userBox_->currentText() << std::endl;
+	std::cout << std::endl;
+}
+
 void GameWidget::newMessage()
 { }
 
-void GameWidget::updateUser()
+void GameWidget::updateUserOld()
 {
   WCheckBox *b = dynamic_cast<WCheckBox *>(sender());
   users_[b->text()] = b->isChecked();
 }
+
+void GameWidget::updateUser()
+{
+//  WSelectionBox *b = dynamic_cast<WSelectionBox *>(sender());
+
+//  users_[b->text()] = b->isChecked();
+}
+
+
 
 void GameWidget::processGEvent(const GEvent& event)
 {

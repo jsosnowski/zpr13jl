@@ -8,6 +8,8 @@
 #ifndef GAMEWIDGET_H_
 #define GAMEWIDGET_H_
 
+#include <algorithm>
+
 #include <Wt/WContainerWidget>
 #include <Wt/WJavaScript>
 #include <Wt/WSound>
@@ -46,6 +48,9 @@ public:
   void connect();
   void disconnect();
 
+//  void inviteClick(const Wt::WString&);
+  void inviteClick();
+  void sendInvitation();
 
   /*! \brief Show a simple login screen.
    */
@@ -75,6 +80,7 @@ protected:
 				Wt::WWidget *but1, Wt::WWidget *but2);
 
   virtual void updateUsers();
+  virtual void updateUsersOld();
   virtual void newMessage();
 
   virtual void render(Wt::WFlags<Wt::RenderFlag> flags);
@@ -101,14 +107,17 @@ private:
   Wt::WTextArea        *messageEdit_;
   Wt::WPushButton      *sendButton_;
   Wt::WContainerWidget *userList_;
+  Wt::WSelectionBox	   *userBox_;
 
   Wt::WSound* messageReceived_;
 
   Wt::WPushButton *but1_;
   Wt::WPushButton *but2_;
+  Wt::WPushButton *inviteButton;
 
   void login();
   void send();
+  void updateUserOld();
   void updateUser();
 
   /* called from another session */

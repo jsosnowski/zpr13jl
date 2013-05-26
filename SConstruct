@@ -15,6 +15,8 @@ env.Append(LIBS=[
   'boost_program_options', 'boost_date_time'
 ])
 
+env.Append(CXXFLAGS="-std=c++11")
+
 #       Add library search path
 env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 

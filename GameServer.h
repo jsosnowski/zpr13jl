@@ -18,6 +18,7 @@ namespace Wt {
 
 #include <set>
 #include <map>
+#include <string.h>
 #include <boost/thread.hpp>
 
 #include "GEvent.h"
