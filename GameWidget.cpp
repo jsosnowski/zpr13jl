@@ -51,7 +51,7 @@ GameWidget::~GameWidget()
 void GameWidget::connect()
 {
   if (server_.connect
-      (this, boost::bind(&GameWidget::processGEvent, this, _1)))
+      (this, user_, boost::bind(&GameWidget::processGEvent, this, _1)))
     Wt::WApplication::instance()->enableUpdates(true);
 }
 
@@ -393,7 +393,10 @@ void GameWidget::updateUsers()
 
 void GameWidget::sendInvitation()
 {
-
+	if(user_ != userBox_->currentText())
+	{
+		server_.initGame(this, user_, userBox_->currentText());
+	}
 }
 
 void GameWidget::inviteClick()
@@ -420,7 +423,33 @@ void GameWidget::updateUser()
 //  users_[b->text()] = b->isChecked();
 }
 
+void GameWidget::drawInvitation(const GEvent &event)
+{
+	WText *w = new WText("User: " + event.user() + " invited U",
+			messages_);
+	messages_->addWidget(new WBreak());
+	WPushButton *accept = new WPushButton("Accept", messages_);
+	WPushButton *reject = new WPushButton("Reject", messages_);
 
+	accept->clicked().connect(this, &GameWidget::sendAccept);
+	reject->clicked().connect(this, &GameWidget::rejectGame);
+}
+
+void GameWidget::beginGame()
+{
+	std::cout << std::endl;
+	std::cout << "$$$$ BEGINNING GAME $$$#" << std::endl;
+}
+
+void GameWidget::rejectGame()
+{
+	server_.initGameAns(this,GEvent::GReject, user_);
+}
+
+void GameWidget::sendAccept()
+{
+	server_.initGameAns(this,GEvent::GAccept, user_);
+}
 
 void GameWidget::processGEvent(const GEvent& event)
 {
@@ -468,6 +497,23 @@ void GameWidget::processGEvent(const GEvent& event)
 
   if(event.type() == GEvent::But2)
 	  but2_->setValueText("Siema");
+
+  if(event.type() == GEvent::GOffer)
+  {
+	  std::cout << std::endl;
+	  std::cout << " $$$$$$$$ ########### $$$$$$$$$$ " << std::endl;
+	  drawInvitation(event);
+  }
+
+  if(event.type() == GEvent::GReject)
+  {
+	  messages_->clear();
+  }
+
+  if(event.type() == GEvent::GAccept)
+  {
+	  beginGame();
+  }
 
   bool display = event.type() != GEvent::Message
     || !userList_

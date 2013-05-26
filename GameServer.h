@@ -54,14 +54,17 @@ public:
    * Returns whether the client has been connected (or false if the client
    * was already connected).
    */
-  bool connect(Client *client, const GameEventCallback& handleEvent);
+  bool connect(Client *client, const Wt::WString &,
+		  const GameEventCallback& handleEvent);
 
-  bool initGame(Client *client, const Wt::WString &clientName, const Wt::WString &oponent);
+  bool initGame(Client *client, const Wt::WString &clientName,
+		  const Wt::WString &oponent);
 
   /**
   * @brief Client answers that want fight or that no want fight with oponent
   **/
-  bool initGameAns(Client *client, const GEvent::Type ans, const Wt::WString &clientName, const Wt::WString &oponent);
+  bool initGameAns(Client *client, const GEvent::Type ans,
+		  const Wt::WString &clientName);//, const Wt::WString &oponent);
 
   /*! \brief Disconnect from the chat server.
    *

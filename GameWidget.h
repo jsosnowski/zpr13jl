@@ -120,6 +120,11 @@ private:
   void updateUserOld();
   void updateUser();
 
+  void rejectGame();
+  void sendAccept();
+  void beginGame();
+  void drawInvitation(const GEvent&);
+
   /* called from another session */
   void processGEvent(const GEvent& event);
 };
