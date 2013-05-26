@@ -24,4 +24,6 @@ a potem:
 git push origin nazwaBranchu
 /#################################################################/
 
-git rebase -i
+//squashing, łaczenie commitow
+git rebase -i HEAD~2   //bierze dwa commity od gory i zmieniamy pick->squash 
+						//te ktore chcemy polaczyc
