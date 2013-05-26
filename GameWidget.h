@@ -5,14 +5,14 @@
  * See the LICENSE file for terms of use.
  */
 
-#ifndef SIMPLECHATWIDGET_H_
-#define SIMPLECHATWIDGET_H_
+#ifndef GAMEWIDGET_H_
+#define GAMEWIDGET_H_
 
 #include <Wt/WContainerWidget>
 #include <Wt/WJavaScript>
 #include <Wt/WSound>
 
-#include "SimpleChatServer.h"
+#include "GameServer.h"
 
 namespace Wt {
   class WApplication;
@@ -22,7 +22,7 @@ namespace Wt {
   class WTextArea;
 }
 
-class ChatEvent;
+class GEvent;
 
 /**
  * \defgroup chatexample Chat example
@@ -31,17 +31,17 @@ class ChatEvent;
 
 /*! \brief A self-contained chat widget.
  */
-class SimpleChatWidget : public Wt::WContainerWidget,
-			 public SimpleChatServer::Client
+class GameWidget : public Wt::WContainerWidget,
+			 public GameServer::Client
 {
 public:
   /*! \brief Create a chat widget that will connect to the given server.
    */
-  SimpleChatWidget(SimpleChatServer& server, Wt::WContainerWidget *parent = 0);
+  GameWidget(GameServer& server, Wt::WContainerWidget *parent = 0);
 
   /*! \brief Delete a chat widget.
    */
-  ~SimpleChatWidget();
+  ~GameWidget();
 
   void connect();
   void disconnect();
@@ -62,7 +62,7 @@ public:
 
   void logout();
 
-  SimpleChatServer& server() { return server_; }
+  GameServer& server() { return server_; }
 
   int userCount() { return users_.size(); }
 
@@ -86,7 +86,7 @@ private:
   typedef std::map<Wt::WString, bool> UserMap;
   UserMap users_;
 
-  SimpleChatServer&     server_;
+  GameServer&     server_;
   bool                  loggedIn_;
 
   Wt::JSlot             clearInput_;
@@ -112,9 +112,9 @@ private:
   void updateUser();
 
   /* called from another session */
-  void processChatEvent(const ChatEvent& event);
+  void processGEvent(const GEvent& event);
 };
 
 /*@}*/
 
-#endif // SIMPLECHATWIDGET
+#endif // GAMEWIDGET_H_

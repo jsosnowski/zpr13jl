@@ -11,8 +11,8 @@
 #include <Wt/WServer>
 #include <Wt/WText>
 
-#include "SimpleChatServer.h"
-#include "PopupChatWidget.h"
+#include "GameServer.h"
+#include "GameWidget.h"
 
 using namespace Wt;
 
@@ -28,10 +28,10 @@ class ChatApplication : public WApplication
 public:
   /*! \brief Create a new instance.
    */
-  ChatApplication(const WEnvironment& env, SimpleChatServer& server);
+  ChatApplication(const WEnvironment& env, GameServer& server);
 
 private:
-  SimpleChatServer& server_;
+  GameServer& server_;
 
   /*! \brief Add another chat client.
    */
@@ -39,7 +39,7 @@ private:
 };
 
 ChatApplication::ChatApplication(const WEnvironment& env,
-				 SimpleChatServer& server)
+				 GameServer& server)
   : WApplication(env),
     server_(server)
 {
@@ -50,7 +50,7 @@ ChatApplication::ChatApplication(const WEnvironment& env,
 
   root()->addWidget(new WText(WString::tr("introduction")));
 
-  SimpleChatWidget *chatWidget = new SimpleChatWidget(server_, root());
+  GameWidget *chatWidget = new GameWidget(server_, root());
   chatWidget->setStyleClass("chat");
 
   root()->addWidget(new WText(WString::tr("details")));
@@ -108,7 +108,7 @@ ChatApplication::ChatApplication(const WEnvironment& env,
 //}
 
 WApplication *createApplication(const WEnvironment& env,
-				SimpleChatServer& server)
+				GameServer& server)
 {
   return new ChatApplication(env, server);
 }
@@ -121,7 +121,7 @@ WApplication *createApplication(const WEnvironment& env,
 int main(int argc, char **argv)
 {
   Wt::WServer server(argv[0]);
-  SimpleChatServer chatServer(server);
+  GameServer chatServer(server);
 
   server.setServerConfiguration(argc, argv, WTHTTP_CONFIGURATION);
 

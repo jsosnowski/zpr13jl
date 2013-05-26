@@ -4,8 +4,8 @@
  *
  * See the LICENSE file for terms of use.
  */
-#ifndef SIMPLECHATSERVER_H_
-#define SIMPLECHATSERVER_H_
+#ifndef GAMESERVER_H_
+#define GAMESERVER_H_
 
 #include <boost/noncopyable.hpp>
 
@@ -20,69 +20,18 @@ namespace Wt {
 #include <map>
 #include <boost/thread.hpp>
 
+#include "GEvent.h"
+
 /**
  * @addtogroup chatexample
  */
 /*@{*/
 
-/*! \brief Encapsulate a chat event.
- */
-class ChatEvent
-{
-public:
-  /*! \brief Enumeration for the event type.
-   */
-  enum Type { Login, Logout, Rename, Message, But1, But2 };
-
-  /*! \brief Get the event type.
-   */
-  Type type() const { return type_; }
-
-  /*! \brief Get the user who caused the event.
-   */
-  const Wt::WString& user() const { return user_; }
-
-  /*! \brief Get the message of the event.
-   */
-  const Wt::WString& message() const { return message_; }
-
-  /*! \brief Get the extra data for this event.
-   */
-  const Wt::WString& data() const { return data_; }
-
-  /*! \brief Get the message formatted as HTML, rendered for the given user.
-   *
-   * The \p format indicates how the message should be formatted.
-   */
-  const Wt::WString formattedHTML(const Wt::WString& user,
-				  Wt::TextFormat format) const;
-
-private:
-  Type type_;
-  Wt::WString user_;
-  Wt::WString data_;
-  Wt::WString message_;
-
-  /*
-   * Both user and html will be formatted as html
-   */
-  ChatEvent(const Wt::WString& user, const Wt::WString& message)
-    : type_(Message), user_(user), message_(message)
-  { }
-
-  ChatEvent(Type type, const Wt::WString& user,
-	    const Wt::WString& data = Wt::WString::Empty)
-    : type_(type), user_(user), data_(data)
-  { }
-
-  friend class SimpleChatServer;
-};
-
-typedef boost::function<void (const ChatEvent&)> ChatEventCallback;
+typedef boost::function<void (const GEvent&)> GameEventCallback;
 
 /*! \brief A simple chat server
  */
-class SimpleChatServer : boost::noncopyable
+class GameServer : boost::noncopyable
 {
 public:
   /*
@@ -94,7 +43,7 @@ public:
 
   /*! \brief Create a new chat server.
    */
-  SimpleChatServer(Wt::WServer& server);
+  GameServer(Wt::WServer& server);
 
   /*! \brief Connects to the chat server.
    *
@@ -104,7 +53,7 @@ public:
    * Returns whether the client has been connected (or false if the client
    * was already connected).
    */
-  bool connect(Client *client, const ChatEventCallback& handleEvent);
+  bool connect(Client *client, const GameEventCallback& handleEvent);
 
   /*! \brief Disconnect from the chat server.
    *
@@ -134,7 +83,7 @@ public:
   /*! \brief Send a message on behalve of a user.
    */
   void sendMessage(const Wt::WString& user, const Wt::WString& message);
-  void sendBut(const ChatEvent::Type wtyp, const Wt::WString& user); //moje
+  void sendBut(const GEvent::Type wtyp, const Wt::WString& user); //moje
 
   /*! \brief Typedef for a collection of user names.
    */
@@ -147,7 +96,7 @@ public:
 private:
   struct ClientInfo {
     std::string sessionId;
-    ChatEventCallback eventCallback;
+    GameEventCallback eventCallback;
   };
 
   typedef std::map<Client *, ClientInfo> ClientMap;
@@ -157,9 +106,9 @@ private:
   ClientMap clients_;
   UserSet users_;
 
-  void postChatEvent(const ChatEvent& event);
+  void postGEvent(const GEvent& event);
 };
 
 /*@}*/
 
-#endif // SIMPLECHATSERVER_H_
+#endif // GAMESERVER_H_

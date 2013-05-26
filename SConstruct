@@ -9,7 +9,7 @@ env.Append(CPPPATH = ['/usr/include', '/usr/local/include'])
 # libraries to link against
 # Notice you dont need the '-l', since SCons is platform independent
 env.Append(LIBS=[
-  'wt', 'wthttp',
+  'wt', 'wthttp', 'pthread',
   'boost_random', 'boost_regex', 'boost_signals',
   'boost_system', 'boost_thread', 'boost_filesystem',
   'boost_program_options', 'boost_date_time'
@@ -19,4 +19,5 @@ env.Append(LIBS=[
 env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 
 # Compile and link the binary
-env.Program('hello',['exa.cc'])
+env.Program('game',['mainApp.cpp', 'GameWidget.h','GameWidget.cpp',
+'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp'])

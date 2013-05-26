@@ -4,7 +4,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "SimpleChatServer.h"
+#include "GameServer.h"
+
 #include <Wt/WServer>
 
 #include <iostream>
@@ -12,54 +13,12 @@
 
 using namespace Wt;
 
-const WString ChatEvent::formattedHTML(const WString& user,
-				       TextFormat format) const
-{
-  switch (type_) {
-  case Login:
-    return WString::fromUTF8("<span class='chat-info'>")
-      + WWebWidget::escapeText(user_) + " joined.</span>";
-  case Logout:
-    return WString::fromUTF8("<span class='chat-info'>")
-      + ((user == user_) ?
-	 WString::fromUTF8("You") :
-	 WWebWidget::escapeText(user_))
-      + " logged out.</span>";
-  case Rename:
-    return "<span class='chat-info'>"
-      + ((user == data_ || user == user_) ?
-	 "You are" :
-	 (WWebWidget::escapeText(user_) + " is")) 
-      + " now known as " + WWebWidget::escapeText(data_) + ".</span>";
-  case Message:{
-    WString result;
-
-    result = WString("<span class='")
-      + ((user == user_) ?
-	 "chat-self" :
-	 "chat-user")
-      + "'>" + WWebWidget::escapeText(user_) + ":</span>";
-
-    WString msg
-      = (format == XHTMLText ? message_ : WWebWidget::escapeText(message_));
-
-    if (message_.toUTF8().find(user.toUTF8()) != std::string::npos)
-      return result + "<span class='chat-highlight'>" + msg + "</span>";
-    else
-      return result + msg;
-  }
-  default:
-    return "";
-  }
-}
-
-
-SimpleChatServer::SimpleChatServer(WServer& server)
+GameServer::GameServer(WServer& server)
   : server_(server)
 { }
 
-bool SimpleChatServer::connect(Client *client,
-			       const ChatEventCallback& handleEvent)
+bool GameServer::connect(Client *client,
+			       const GameEventCallback& handleEvent)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -76,28 +35,28 @@ bool SimpleChatServer::connect(Client *client,
     return false;
 }
 
-bool SimpleChatServer::disconnect(Client *client)
+bool GameServer::disconnect(Client *client)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
   return clients_.erase(client) == 1;
 }
 
-bool SimpleChatServer::login(const WString& user)
+bool GameServer::login(const WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
   
   if (users_.find(user) == users_.end()) {
     users_.insert(user);
 
-    postChatEvent(ChatEvent(ChatEvent::Login, user));
+    postGEvent(GEvent(GEvent::Login, user));
 
     return true;
   } else
     return false;
 }
 
-void SimpleChatServer::logout(const WString& user)
+void GameServer::logout(const WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -106,11 +65,11 @@ void SimpleChatServer::logout(const WString& user)
   if (i != users_.end()) {
     users_.erase(i);
 
-    postChatEvent(ChatEvent(ChatEvent::Logout, user));
+    postGEvent(GEvent(GEvent::Logout, user));
   }
 }
 
-bool SimpleChatServer::changeName(const WString& user, const WString& newUser)
+bool GameServer::changeName(const WString& user, const WString& newUser)
 {
   if (user == newUser)
     return true;
@@ -124,7 +83,7 @@ bool SimpleChatServer::changeName(const WString& user, const WString& newUser)
       users_.erase(i);
       users_.insert(newUser);
 
-      postChatEvent(ChatEvent(ChatEvent::Rename, user, newUser));
+      postGEvent(GEvent(GEvent::Rename, user, newUser));
 
       return true;
     } else
@@ -133,7 +92,7 @@ bool SimpleChatServer::changeName(const WString& user, const WString& newUser)
     return false;
 }
 
-WString SimpleChatServer::suggestGuest()
+WString GameServer::suggestGuest()
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -146,17 +105,17 @@ WString SimpleChatServer::suggestGuest()
   }
 }
 
-void SimpleChatServer::sendMessage(const WString& user, const WString& message)
+void GameServer::sendMessage(const WString& user, const WString& message)
 {
-  postChatEvent(ChatEvent(user, message));
+  postGEvent(GEvent(user, message));
 }
 
 //moje
-void SimpleChatServer::sendBut(const ChatEvent::Type mtyp, const WString& user) {
-	postChatEvent(ChatEvent(mtyp, user));
+void GameServer::sendBut(const GEvent::Type mtyp, const WString& user) {
+	postGEvent(GEvent(mtyp, user));
 }
 
-void SimpleChatServer::postChatEvent(const ChatEvent& event)
+void GameServer::postGEvent(const GEvent& event)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -182,7 +141,7 @@ void SimpleChatServer::postChatEvent(const ChatEvent& event)
   }
 }
 
-SimpleChatServer::UserSet SimpleChatServer::users()
+GameServer::UserSet GameServer::users()
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 

@@ -4,8 +4,8 @@
  * See the LICENSE file for terms of use.
  */
 
-#include "SimpleChatWidget.h"
-#include "SimpleChatServer.h"
+#include "GameWidget.h"
+#include "GameServer.h"
 
 #include <Wt/WApplication>
 #include <Wt/WContainerWidget>
@@ -23,7 +23,7 @@
 
 using namespace Wt;
 
-SimpleChatWidget::SimpleChatWidget(SimpleChatServer& server,
+GameWidget::GameWidget(GameServer& server,
 				   Wt::WContainerWidget *parent)
   : WContainerWidget(parent),
     server_(server),
@@ -35,27 +35,27 @@ SimpleChatWidget::SimpleChatWidget(SimpleChatServer& server,
   letLogin();
 }
 
-SimpleChatWidget::~SimpleChatWidget()
+GameWidget::~GameWidget()
 {
   delete messageReceived_;
   logout();
   disconnect();
 }
 
-void SimpleChatWidget::connect()
+void GameWidget::connect()
 {
   if (server_.connect
-      (this, boost::bind(&SimpleChatWidget::processChatEvent, this, _1)))
+      (this, boost::bind(&GameWidget::processGEvent, this, _1)))
     Wt::WApplication::instance()->enableUpdates(true);
 }
 
-void SimpleChatWidget::disconnect()
+void GameWidget::disconnect()
 {
   if (server_.disconnect(this))
     Wt::WApplication::instance()->enableUpdates(false);
 }
 
-void SimpleChatWidget::letLogin()
+void GameWidget::letLogin()
 {
   disconnect();
 
@@ -74,14 +74,14 @@ void SimpleChatWidget::letLogin()
   WPushButton *b = new WPushButton("Login");
   hLayout->addWidget(b, 0, AlignMiddle);
 
-  b->clicked().connect(this, &SimpleChatWidget::login);
-  userNameEdit_->enterPressed().connect(this, &SimpleChatWidget::login);
+  b->clicked().connect(this, &GameWidget::login);
+  userNameEdit_->enterPressed().connect(this, &GameWidget::login);
 
   vLayout->addWidget(statusMsg_ = new WText());
   statusMsg_->setTextFormat(PlainText);
 }
 
-void SimpleChatWidget::login()
+void GameWidget::login()
 {
   if (!loggedIn()) {
     WString name = userNameEdit_->text();
@@ -95,7 +95,7 @@ void SimpleChatWidget::login()
   }
 }
 
-void SimpleChatWidget::logout()
+void GameWidget::logout()
 {
   if (loggedIn()) {
     loggedIn_ = false;
@@ -105,7 +105,7 @@ void SimpleChatWidget::logout()
   }
 }
 
-void SimpleChatWidget::createLayout(WWidget *messages, WWidget *userList,
+void GameWidget::createLayout(WWidget *messages, WWidget *userList,
 				    WWidget *messageEdit,
 				    WWidget *sendButton, WWidget *logoutButton,
 					WWidget *but1, WWidget *but2)
@@ -170,12 +170,12 @@ void SimpleChatWidget::createLayout(WWidget *messages, WWidget *userList,
   setLayout(vLayout);
 }
 
-bool SimpleChatWidget::loggedIn() const
+bool GameWidget::loggedIn() const
 {
   return loggedIn_;
 }
 
-void SimpleChatWidget::render(WFlags<RenderFlag> flags)
+void GameWidget::render(WFlags<RenderFlag> flags)
 {
   if (flags & RenderFull) {
     if (loggedIn()) {
@@ -191,15 +191,15 @@ void SimpleChatWidget::render(WFlags<RenderFlag> flags)
 }
 
 //moje
-void SimpleChatWidget::sendBut1() {
-	server_.sendBut(ChatEvent::But1, user_);
+void GameWidget::sendBut1() {
+	server_.sendBut(GEvent::But1, user_);
 }
 
-void SimpleChatWidget::sendBut2() {
-	server_.sendBut(ChatEvent::But2, user_);
+void GameWidget::sendBut2() {
+	server_.sendBut(GEvent::But2, user_);
 }
 
-bool SimpleChatWidget::startChat(const WString& user)
+bool GameWidget::startChat(const WString& user)
 {
   /*
    * When logging in, we pass our processChatEvent method as the function that
@@ -231,7 +231,7 @@ bool SimpleChatWidget::startChat(const WString& user)
 	WPushButton *but1 = new WPushButton("But1");
 	WPushButton *but2 = new WPushButton("But2");
 	but1_ = but1; but2_ = but2;
-	but1_->setCheckable(true);
+//	but1_->setCheckable(true);
 
     createLayout(messages_, userList_, messageEdit_, sendButton_, logoutButton, but1, but2);
 
@@ -253,23 +253,23 @@ bool SimpleChatWidget::startChat(const WString& user)
        "}, 0); }");
 
     // Bind the C++ and JavaScript event handlers.
-    sendButton_->clicked().connect(this, &SimpleChatWidget::send);
-    messageEdit_->enterPressed().connect(this, &SimpleChatWidget::send);
+    sendButton_->clicked().connect(this, &GameWidget::send);
+    messageEdit_->enterPressed().connect(this, &GameWidget::send);
     sendButton_->clicked().connect(clearInput_);
     messageEdit_->enterPressed().connect(clearInput_);
     sendButton_->clicked().connect(messageEdit_, &WLineEdit::setFocus);
     messageEdit_->enterPressed().connect(messageEdit_, &WLineEdit::setFocus);
 
-	//moje: pod³¹czenie
-	but1->clicked().connect(this, &SimpleChatWidget::sendBut1);
-	but2->clicked().connect(this, &SimpleChatWidget::sendBut2);
-	but2->clicked().connect(this, &SimpleChatWidget::sendBut1);
+	//moje: podï¿½ï¿½czenie
+	but1->clicked().connect(this, &GameWidget::sendBut1);
+	but2->clicked().connect(this, &GameWidget::sendBut2);
+	but2->clicked().connect(this, &GameWidget::sendBut1);
 
     // Prevent the enter from generating a new line, which is its default
     // action
     messageEdit_->enterPressed().preventDefaultAction();
 
-    logoutButton->clicked().connect(this, &SimpleChatWidget::logout);
+    logoutButton->clicked().connect(this, &GameWidget::logout);
 
     WText *msg = new WText
       ("<div><span class='chat-info'>You are joining as "
@@ -297,23 +297,23 @@ bool SimpleChatWidget::startChat(const WString& user)
     return false;
 }
 
-void SimpleChatWidget::send()
+void GameWidget::send()
 {
   if (!messageEdit_->text().empty())
     server_.sendMessage(user_, messageEdit_->text());
 }
 
-void SimpleChatWidget::updateUsers()
+void GameWidget::updateUsers()
 {
   if (userList_) {
     userList_->clear();
 
-    SimpleChatServer::UserSet users = server_.users();
+    GameServer::UserSet users = server_.users();
 
     UserMap oldUsers = users_;
     users_.clear();
 
-    for (SimpleChatServer::UserSet::iterator i = users.begin();
+    for (GameServer::UserSet::iterator i = users.begin();
 	 i != users.end(); ++i) {
       WCheckBox *w = new WCheckBox(escapeText(*i), userList_);
       w->setInline(false);
@@ -325,7 +325,7 @@ void SimpleChatWidget::updateUsers()
 	w->setChecked(true);
 
       users_[*i] = w->isChecked();
-      w->changed().connect(this, &SimpleChatWidget::updateUser);
+      w->changed().connect(this, &GameWidget::updateUser);
 
       if (*i == user_)
 	w->setStyleClass("chat-self");
@@ -333,16 +333,16 @@ void SimpleChatWidget::updateUsers()
   }
 }
 
-void SimpleChatWidget::newMessage()
+void GameWidget::newMessage()
 { }
 
-void SimpleChatWidget::updateUser()
+void GameWidget::updateUser()
 {
   WCheckBox *b = dynamic_cast<WCheckBox *>(sender());
   users_[b->text()] = b->isChecked();
 }
 
-void SimpleChatWidget::processChatEvent(const ChatEvent& event)
+void GameWidget::processGEvent(const GEvent& event)
 {
   WApplication *app = WApplication::instance();
 
@@ -363,8 +363,8 @@ void SimpleChatWidget::processChatEvent(const ChatEvent& event)
   /*
    * If it is not a plain message, also update the user list.
    */
-  if (event.type() != ChatEvent::Message) {
-    if (event.type() == ChatEvent::Rename && event.user() == user_)
+  if (event.type() != GEvent::Message) {
+    if (event.type() == GEvent::Rename && event.user() == user_)
       user_ = event.data();
 
     updateUsers();
@@ -380,16 +380,16 @@ void SimpleChatWidget::processChatEvent(const ChatEvent& event)
     return;
   }
 
-  if(event.type() == ChatEvent::But1)
+  if(event.type() == GEvent::But1)
 	  if(but1_->isDisabled())
 		  but1_->enable();
 	  else
 		  but1_->disable();
 
-  if(event.type() == ChatEvent::But2)
+  if(event.type() == GEvent::But2)
 	  but2_->setValueText("Siema");
 
-  bool display = event.type() != ChatEvent::Message
+  bool display = event.type() != GEvent::Message
     || !userList_
     || (users_.find(event.user()) != users_.end() && users_[event.user()]);
 
