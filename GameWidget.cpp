@@ -17,11 +17,31 @@ GameWidget::GameWidget(GameServer &serv, Wt::WContainerWidget *parent)
 	this->button = new Wt::WPushButton("submit");
 	parent->addWidget(button);
 
+	this->button->clicked().connect(this, &GameWidget::setTextField);
+
 	//add line break
 	parent->addWidget(new Wt::WBreak());
 
 	this->msgToShow = new Wt::WText("po submitowaniu jakiejs wiadomosci ma sie zmienic");
 	parent->addWidget(msgToShow);
+
+//	if(this->server_.connect(
+//			this, boost::bind(&processGameEvent, this, _1)))
+//		Wt::WApplication::instance()->enableUpdates(true);
 }
 
+void GameWidget::setTextField()
+{
+	if(!msgLineEdit->text().empty())
+	{
+		server_.setTextField(msgLineEdit->text());
+	}
+}
 
+void GameWidget::processGameEvent(const GEvent &event)
+{
+	if(event.getType() == GEvent::Message )
+	{
+		msgToShow->setText(msg);
+	}
+}

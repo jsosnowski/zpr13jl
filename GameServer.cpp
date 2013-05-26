@@ -12,3 +12,12 @@ GameServer::GameServer(Wt::WServer &serv)
 {
 }
 
+void GameServer::setTextField(const Wt::WString &msg)
+{
+	postGameEvent(GEvent(msg));
+}
+
+void GameServer::postGameEvent(const GEvent &event)
+{
+	gameEventCallback(event);
+}

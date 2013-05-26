@@ -16,6 +16,7 @@
 #include <Wt/WBreak>
 
 #include "GameServer.h"
+#include "GEvent.h"
 
 class GameWidget : public Wt::WContainerWidget
 {
@@ -31,6 +32,9 @@ public:
 //	GameWidget() {}
 
 	GameWidget(GameServer &, Wt::WContainerWidget *parent = 0);
+
+	void setTextField();
+	void processGameEvent(const GEvent&);
 };
 
 #endif /* GAMEWIDGET_H_ */

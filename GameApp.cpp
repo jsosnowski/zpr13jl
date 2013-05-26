@@ -30,7 +30,7 @@ public:
 GameApp::GameApp(const Wt::WEnvironment &env, GameServer &serv)
 	: Wt::WApplication(env), server_(serv)
 {
-	setTitle("Wt test");
+	setTitle("hello bitches!");
 
 	GameWidget *gameWidget = new GameWidget(this->server_, root());
 }

@@ -24,9 +24,4 @@ a potem:
 git push origin nazwaBranchu
 /#################################################################/
 
-git branch nazwaBranchu
-git checkout nazwaBranchu
-// to żeby przełączyć się na nowy branch
-no i coś tam zrób i zakomituj
-a potem:
-git push origin nazwaBranchu
+git rebase -i
