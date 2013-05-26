@@ -21,7 +21,7 @@ class GEvent
 public:
   /*! \brief Enumeration for the event type.
    */
-  enum Type { Login, Logout, Rename, Message, But1, But2 };
+  enum Type { Login, Logout, Rename, Message, GOffer, GAccept, GReject, But1, But2 };
 
   /*! \brief Get the event type.
    */
