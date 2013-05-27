@@ -26,6 +26,7 @@ bool GameServer::connect(Client *client, const Wt::WString &name,
     ClientInfo clientInfo;
   
     clientInfo.sessionId = WApplication::instance()->sessionId();
+	clientInfo.busy = false;
     clientInfo.eventCallback = handleEvent;
 
     clients_[client] = clientInfo;
@@ -41,24 +42,28 @@ bool GameServer::initGame(Client *client,
 {
 	boost::recursive_mutex::scoped_lock lock(mutex_);
 
-	//if client has already fight with somebody
-	if (fighters_.count(client) != 0)
+	//check if client is busy at this time - meybe fighting with somebody
+	if (clients_[client].busy == true)
 		return false;
 	//if client wants to fight with somebody who doesn't exists
 	if (names_clients_.count(oponent) != 1)
 		return false;
 
-	// find opnents identifier
+	// find oponents identifier
 	Client* op = names_clients_[oponent];
-	if (fighters_.count(op) != 0)
+	// oponent should be free to take challange
+	if (clients_[op].busy == true)
 		return false;
-	
+
 	// link client with oponents
 	prepareFighters_[client] = op;
 	prepareFighters_[op] = client;
 
-	postGEvent(GEvent(GEvent::Type::GOffer, clientName),
-			clients_[op].sessionId);
+	// now they are both busy
+	clients_[client].busy = true;
+	clients_[op].busy = true;
+
+	postGEvent(GEvent(GEvent::Type::GOffer, clientName), clients_[op].sessionId);
 
 	return true;
 }
@@ -67,12 +72,41 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 		const Wt::WString &clientName)
 //		, const Wt::WString &clientName, const Wt::WString &oponent)
 {
-	if (ans == GEvent::Type::GAccept)
+	boost::recursive_mutex::scoped_lock lock(mutex_);
+
+	if (prepareFighters_.count(client) != 1) {
+		std::cout<<std::endl;
+		std::cout << "Gracz z nikim nie gra...";
+		std::cout<<std::endl;
+		return false;
+	}
+
+	Client *op = prepareFighters_[client];
+
+	// when oponent is dead
+	if (prepareFighters_.count(op) != 1)
+		return false;
+
+	if (ans == GEvent::Type::GAccept) {
 		postGEvent(GEvent(GEvent::Type::GAccept, clientName),
 				clients_[prepareFighters_[client]].sessionId);
-	else
+
+		fighters_[client] = op;
+		fighters_[op] = client;
+//		postGEvent(GEvent(GEvent::Type::GAccept, clientName), clients_[client].sessionId);
+	}
+	else {
+		// in case of reject fighting all of them are free
 		postGEvent(GEvent(GEvent::Type::GReject, clientName),
 				clients_[prepareFighters_[client]].sessionId);
+
+		clients_[client].busy = false;
+		clients_[op].busy = false;
+//		postGEvent(GEvent(GEvent::Type::GReject, clientName), clients_[client].sessionId);
+	}
+
+	prepareFighters_.erase(client);
+	prepareFighters_.erase(op);
 
 	return true;
 }
@@ -80,6 +114,10 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 bool GameServer::disconnect(Client *client)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
+
+  // delete client from game structures
+  fighters_.erase(client);
+  prepareFighters_.erase(client);
 
   return clients_.erase(client) == 1;
 }
@@ -102,6 +140,9 @@ void GameServer::logout(const WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
+  //delete association between user name and user client object
+  names_clients_.erase(user);
+
   UserSet::iterator i = users_.find(user);
 
   if (i != users_.end()) {
@@ -117,6 +158,15 @@ bool GameServer::changeName(const WString& user, const WString& newUser)
     return true;
 
   boost::recursive_mutex::scoped_lock lock(mutex_);
+
+  //check if association beetwen user name and user client object exist and change it
+  if (names_clients_.count(user) ) {
+	  if (names_clients_.count(newUser) == 0) {
+		  names_clients_[newUser] = names_clients_[user];
+		  names_clients_.erase(user);
+	  }
+  }
+
   
   UserSet::iterator i = users_.find(user);
 
