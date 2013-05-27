@@ -72,6 +72,8 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 		const Wt::WString &clientName)
 //		, const Wt::WString &clientName, const Wt::WString &oponent)
 {
+	boost::recursive_mutex::scoped_lock lock(mutex_);
+
 	if (prepareFighters_.count(client) != 1) {
 		std::cout<<std::endl;
 		std::cout << "Gracz z nikim nie gra...";
@@ -80,6 +82,10 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 	}
 
 	Client *op = prepareFighters_[client];
+
+	// when oponent is dead
+	if (prepareFighters_.count(op) != 1)
+		return false;
 
 	if (ans == GEvent::Type::GAccept) {
 		postGEvent(GEvent(GEvent::Type::GAccept, clientName),
@@ -108,6 +114,10 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 bool GameServer::disconnect(Client *client)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
+
+  // delete client from game structures
+  fighters_.erase(client);
+  prepareFighters_.erase(client);
 
   return clients_.erase(client) == 1;
 }
@@ -148,6 +158,15 @@ bool GameServer::changeName(const WString& user, const WString& newUser)
     return true;
 
   boost::recursive_mutex::scoped_lock lock(mutex_);
+
+  //check if association beetwen user name and user client object exist and change it
+  if (names_clients_.count(user) ) {
+	  if (names_clients_.count(newUser) == 0) {
+		  names_clients_[newUser] = names_clients_[user];
+		  names_clients_.erase(user);
+	  }
+  }
+
   
   UserSet::iterator i = users_.find(user);
 
