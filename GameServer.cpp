@@ -63,12 +63,12 @@ bool GameServer::initGame(Client *client,
 	clients_[client].busy = true;
 	clients_[op].busy = true;
 
-	postGEvent(GEvent(GEvent::Type::GOffer, clientName), clients_[op].sessionId);
+	postGEvent(GEvent(GEvent::GEType::GOffer, clientName), clients_[op].sessionId);
 
 	return true;
 }
 
-bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
+bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 		const Wt::WString &clientName)
 //		, const Wt::WString &clientName, const Wt::WString &oponent)
 {
@@ -87,22 +87,22 @@ bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
 	if (prepareFighters_.count(op) != 1)
 		return false;
 
-	if (ans == GEvent::Type::GAccept) {
-		postGEvent(GEvent(GEvent::Type::GAccept, clientName),
+	if (ans == GEvent::GEType::GAccept) {
+		postGEvent(GEvent(GEvent::GEType::GAccept, clientName),
 				clients_[prepareFighters_[client]].sessionId);
 
 		fighters_[client] = op;
 		fighters_[op] = client;
-//		postGEvent(GEvent(GEvent::Type::GAccept, clientName), clients_[client].sessionId);
+//		postGEvent(GEvent(GEvent::GEType::GAccept, clientName), clients_[client].sessionId);
 	}
 	else {
 		// in case of reject fighting all of them are free
-		postGEvent(GEvent(GEvent::Type::GReject, clientName),
+		postGEvent(GEvent(GEvent::GEType::GReject, clientName),
 				clients_[prepareFighters_[client]].sessionId);
 
 		clients_[client].busy = false;
 		clients_[op].busy = false;
-//		postGEvent(GEvent(GEvent::Type::GReject, clientName), clients_[client].sessionId);
+//		postGEvent(GEvent(GEvent::GEType::GReject, clientName), clients_[client].sessionId);
 	}
 
 	prepareFighters_.erase(client);
@@ -203,7 +203,7 @@ void GameServer::sendMessage(const WString& user, const WString& message)
 }
 
 //moje
-void GameServer::sendBut(const GEvent::Type mtyp, const WString& user) {
+void GameServer::sendBut(const GEvent::GEType mtyp, const WString& user) {
 	postGEvent(GEvent(mtyp, user));
 }
 

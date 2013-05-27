@@ -21,11 +21,12 @@ class GEvent
 public:
   /*! \brief Enumeration for the event type.
    */
-  enum Type { Login, Logout, Rename, Message, GOffer, GAccept, GReject, But1, But2 };
+  typedef enum xType { Login, Logout, Rename, Message,
+	  GOffer, GAccept, GReject, But1, But2 }GEType;
 
   /*! \brief Get the event type.
    */
-  Type type() const { return type_; }
+  GEType type() const { return type_; }
 
   /*! \brief Get the user who caused the event.
    */
@@ -47,7 +48,7 @@ public:
 				  Wt::TextFormat format) const;
 
 private:
-  Type type_;
+  GEType type_;
   Wt::WString user_;
   Wt::WString data_;
   Wt::WString message_;
@@ -59,7 +60,7 @@ private:
     : type_(Message), user_(user), message_(message)
   { }
 
-  GEvent(Type type, const Wt::WString& user,
+  GEvent(GEType type, const Wt::WString& user,
 	    const Wt::WString& data = Wt::WString::Empty)
     : type_(type), user_(user), data_(data)
   { }
