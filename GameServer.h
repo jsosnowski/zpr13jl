@@ -83,7 +83,7 @@ public:
    */
   void logout(const Wt::WString& user);
 
-  void remGameStructures(const WString& user);
+  void remGameStructures(const Wt::WString& user);
 
   /*! \brief Changes the name.
    */

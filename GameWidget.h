@@ -123,8 +123,8 @@ private:
   void rejectGame();
   void sendAccept();
   void beginGame();
+  void showRejectedMsg(const Wt::WString &);
   void clearInvitation();
-  void showRejectedMsg(const WString &);
   void drawInvitation(const GEvent&);
 
   /* called from another session */

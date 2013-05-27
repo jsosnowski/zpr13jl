@@ -4,7 +4,7 @@ env = Environment()
 env.Append(CPPPATH = ['/usr/include', '/usr/local/include'])
 
 #       Add compile-time flags
-#env.Append(CCFLAGS=['-Wall','-g'])
+env.Append(CCFLAGS=['-Wall','-g'])
 
 # libraries to link against
 # Notice you dont need the '-l', since SCons is platform independent
@@ -22,4 +22,4 @@ env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 
 # Compile and link the binary
 env.Program('game',['mainApp.cpp', 'GameWidget.h','GameWidget.cpp',
-'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp'])
+'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp', 'BoardWidget.h', 'BoardWidget.cpp'])

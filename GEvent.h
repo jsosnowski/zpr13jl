@@ -12,8 +12,6 @@
 #include <Wt/WString>
 #include <Wt/WServer>
 
-using namespace Wt;
-
 /*! \brief Encapsulate a chat event.
  */
 class GEvent
@@ -21,7 +19,7 @@ class GEvent
 public:
   /*! \brief Enumeration for the event type.
    */
-  typedef enum xType { Login, Logout, Rename, Message,
+  typedef enum GEType { Login, Logout, Rename, Message,
 	  GOffer, GAccept, GReject, But1, But2 }GEType;
 
   /*! \brief Get the event type.

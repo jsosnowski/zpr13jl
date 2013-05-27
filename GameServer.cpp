@@ -136,7 +136,7 @@ bool GameServer::login(const WString& user)
     return false;
 }
 
-void GameServer::logout(const WString& user)
+void GameServer::logout(const Wt::WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -266,6 +266,7 @@ void GameServer::postGEvent(const GEvent& event,
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
+  //TODO app don't used
   WApplication *app = WApplication::instance();
 
   for (ClientMap::const_iterator i = clients_.begin(); i != clients_.end();

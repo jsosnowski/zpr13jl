@@ -10,6 +10,7 @@
 
 #include "GameWidget.h"
 #include "GameServer.h"
+#include "BoardWidget.h"
 
 #include <Wt/WApplication>
 #include <Wt/WContainerWidget>
@@ -431,6 +432,15 @@ void GameWidget::drawInvitation(const GEvent &event)
 void GameWidget::beginGame()
 {
 	messages_->addWidget(new WText("game accepted, beginning game"));
+	//passed this, to know which client's board is
+	boardWidget_ = new BoardWidget(this, server_, BoardWidget::Naughts, messages_);
+}
+
+void GameWidget::sendAccept()
+{
+	clearInvitation();
+	server_.initGameAns(this,GEvent::GAccept, user_);
+	boardWidget_ = new BoardWidget(this, server_, BoardWidget::Crosses, messages_);
 }
 
 void GameWidget::rejectGame()
@@ -439,11 +449,6 @@ void GameWidget::rejectGame()
 	server_.initGameAns(this,GEvent::GReject, user_);
 }
 
-void GameWidget::sendAccept()
-{
-	clearInvitation();
-	server_.initGameAns(this,GEvent::GAccept, user_);
-}
 
 void GameWidget::clearInvitation()
 {
