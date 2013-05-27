@@ -63,7 +63,7 @@ public:
   /**
   * @brief Client answers that want fight or that no want fight with oponent
   **/
-  bool initGameAns(Client *client, const GEvent::Type ans,
+  bool initGameAns(Client *client, const GEvent::GEType ans,
 		  const Wt::WString &clientName);//, const Wt::WString &oponent);
 
   /*! \brief Disconnect from the chat server.
@@ -94,7 +94,7 @@ public:
   /*! \brief Send a message on behalve of a user.
    */
   void sendMessage(const Wt::WString& user, const Wt::WString& message);
-  void sendBut(const GEvent::Type wtyp, const Wt::WString& user); //moje
+  void sendBut(const GEvent::GEType wtyp, const Wt::WString& user); //moje
 
   /*! \brief Typedef for a collection of user names.
    */
@@ -119,13 +119,12 @@ private:
   boost::recursive_mutex mutex_;
   ClientMap clients_;
   UserSet users_;
+  /** */
   NameClientMap names_clients_;
-
-
-
+  /** */
   FightersMap fighters_;
+  /** */
   FightersMap prepareFighters_;
-
 
   void postGEvent(const GEvent& event);
   /**
