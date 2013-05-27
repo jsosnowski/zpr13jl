@@ -17,7 +17,7 @@ GameServer::GameServer(WServer& server)
   : server_(server)
 { }
 
-bool GameServer::connect(Client *client,
+bool GameServer::connect(Client *client, const Wt::WString &name,
 			       const GameEventCallback& handleEvent)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
@@ -30,13 +30,15 @@ bool GameServer::connect(Client *client,
     clientInfo.eventCallback = handleEvent;
 
     clients_[client] = clientInfo;
+    names_clients_[name] = client;
 
     return true;
   } else
     return false;
 }
 
-bool GameServer::initGame(Client *client, const Wt::WString &clientName, const Wt::WString &oponent) 
+bool GameServer::initGame(Client *client,
+		const Wt::WString &clientName, const Wt::WString &oponent)
 {
 	boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -66,20 +68,35 @@ bool GameServer::initGame(Client *client, const Wt::WString &clientName, const W
 	return true;
 }
 
-bool GameServer::initGameAns(Client *client, const GEvent::Type ans, const Wt::WString &clientName, const Wt::WString &oponent)
+bool GameServer::initGameAns(Client *client, const GEvent::Type ans,
+		const Wt::WString &clientName)
+//		, const Wt::WString &clientName, const Wt::WString &oponent)
 {
-	Client *op = names_clients_[oponent];
+	if (prepareFighters_.count(client) != 1) {
+		std::cout<<std::endl;
+		std::cout << "Gracz z nikim nie gra...";
+		std::cout<<std::endl;
+		return false;
+	}
+
+	Client *op = prepareFighters_[client];
 
 	if (ans == GEvent::Type::GAccept) {
+		postGEvent(GEvent(GEvent::Type::GAccept, clientName),
+				clients_[prepareFighters_[client]].sessionId);
+
 		fighters_[client] = op;
 		fighters_[op] = client;
-		postGEvent(GEvent(GEvent::Type::GAccept, clientName), clients_[client].sessionId);
+//		postGEvent(GEvent(GEvent::Type::GAccept, clientName), clients_[client].sessionId);
 	}
 	else {
 		// in case of reject fighting all of them are free
+		postGEvent(GEvent(GEvent::Type::GReject, clientName),
+				clients_[prepareFighters_[client]].sessionId);
+
 		clients_[client].busy = false;
 		clients_[op].busy = false;
-		postGEvent(GEvent(GEvent::Type::GReject, clientName), clients_[client].sessionId);
+//		postGEvent(GEvent(GEvent::Type::GReject, clientName), clients_[client].sessionId);
 	}
 
 	prepareFighters_.erase(client);
@@ -197,7 +214,8 @@ void GameServer::postGEvent(const GEvent& event)
   }
 }
 
-void GameServer::postGEvent(const GEvent& event, const std::string &toSession)
+void GameServer::postGEvent(const GEvent& event,
+		const std::string &toSession)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -206,9 +224,9 @@ void GameServer::postGEvent(const GEvent& event, const std::string &toSession)
   for (ClientMap::const_iterator i = clients_.begin(); i != clients_.end();
        ++i) {
 
-    if (app && app->sessionId() == i->second.sessionId)
-      i->second.eventCallback(event);
-    else
+//    if (app && app->sessionId() == i->second.sessionId)
+//      i->second.eventCallback(event);
+//    else
 		if (i->second.sessionId == toSession)
 			server_.post(i->second.sessionId,
 				boost::bind(i->second.eventCallback, event));
