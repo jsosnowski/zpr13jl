@@ -63,9 +63,6 @@ public:
    */
   bool startChat(const Wt::WString& user);
 
-  void sendBut1(); //moje
-  void sendBut2();
-
   void logout();
 
   GameServer& server() { return server_; }
@@ -77,8 +74,7 @@ public:
 protected:
   virtual void createLayout(Wt::WWidget *messages, Wt::WWidget *userList,
 			    Wt::WWidget *messageEdit,
-			    Wt::WWidget *sendButton, Wt::WWidget *logoutButton,
-				Wt::WWidget *but1, Wt::WWidget *but2);
+			    Wt::WWidget *sendButton, Wt::WWidget *logoutButton);
 
   virtual void updateUsers();
   virtual void updateUsersOld();
@@ -117,8 +113,6 @@ private:
 
   Wt::WSound* messageReceived_;
 
-  Wt::WPushButton *but1_;
-  Wt::WPushButton *but2_;
   Wt::WPushButton *inviteButton;
 
   void login();
