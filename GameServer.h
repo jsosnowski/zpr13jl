@@ -103,6 +103,7 @@ public:
 private:
   struct ClientInfo {
     std::string sessionId;
+	bool busy;
     GameEventCallback eventCallback;
   };
 
