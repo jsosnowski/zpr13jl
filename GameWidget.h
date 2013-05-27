@@ -15,6 +15,7 @@
 #include <Wt/WSound>
 
 #include "GameServer.h"
+#include "BoardWidget.h"
 
 namespace Wt {
   class WApplication;
@@ -109,6 +110,11 @@ private:
   Wt::WContainerWidget *userList_;
   Wt::WSelectionBox	   *userBox_;
 
+  /** container created when invitation is sent */
+  Wt::WContainerWidget *invitationContainer;
+
+  BoardWidget 			*boardWidget_;
+
   Wt::WSound* messageReceived_;
 
   Wt::WPushButton *but1_;
@@ -123,6 +129,8 @@ private:
   void rejectGame();
   void sendAccept();
   void beginGame();
+  void clearInvitation();
+  void showRejectedMsg(const WString &);
   void drawInvitation(const GEvent&);
 
   /* called from another session */

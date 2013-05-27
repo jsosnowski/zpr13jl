@@ -35,7 +35,9 @@ GameWidget::GameWidget(GameServer& server,
     loggedIn_(false),
     userList_(0),
     messageReceived_(0),
-    userBox_(0)
+    userBox_(0),
+    invitationContainer(0),
+    boardWidget_(0)
 {
   user_ = server_.suggestGuest();
   letLogin();
@@ -360,12 +362,12 @@ void GameWidget::updateUsers()
 				this, &GameWidget::inviteClick);
 		inviteButton->clicked().connect(
 				this, &GameWidget::sendInvitation);
-		//		BOOST_FOREACH(Wt::WString i, users)
+//		BOOST_FOREACH(Wt::WString i, users)
 //		{
 //			std::cout << "ilosc: " << users.size() << std::endl;
 //			userBox_->addItem(i);
 //		}
-
+//
 //		UserMap oldUsers = users_;
 //		users_.clear();
 //
@@ -395,7 +397,20 @@ void GameWidget::sendInvitation()
 {
 	if(user_ != userBox_->currentText())
 	{
-		server_.initGame(this, user_, userBox_->currentText());
+		bool b = server_.initGame(this, user_, userBox_->currentText());
+		if(b == false) //becouse user can be busy
+		{
+			Wt::WString msg = "User that U are trying to invite is currently playing game";
+			messages_->addWidget(new WText(msg));
+		}
+		else
+		{
+			messages_->addWidget(new WText("Waiting for player response"));
+		}
+	}
+	else
+	{
+		messages_->addWidget(new WText("U can't invite yourself!"));
 	}
 }
 
@@ -425,11 +440,12 @@ void GameWidget::updateUser()
 
 void GameWidget::drawInvitation(const GEvent &event)
 {
+	invitationContainer = new WContainerWidget(messages_);
 	WText *w = new WText("User: " + event.user() + " invited U",
-			messages_);
-	messages_->addWidget(new WBreak());
-	WPushButton *accept = new WPushButton("Accept", messages_);
-	WPushButton *reject = new WPushButton("Reject", messages_);
+			invitationContainer);
+	invitationContainer->addWidget(new WBreak());
+	WPushButton *accept = new WPushButton("Accept", invitationContainer);
+	WPushButton *reject = new WPushButton("Reject", invitationContainer);
 
 	accept->clicked().connect(this, &GameWidget::sendAccept);
 	reject->clicked().connect(this, &GameWidget::rejectGame);
@@ -437,18 +453,29 @@ void GameWidget::drawInvitation(const GEvent &event)
 
 void GameWidget::beginGame()
 {
-	std::cout << std::endl;
-	std::cout << "$$$$ BEGINNING GAME $$$#" << std::endl;
+	messages_->addWidget(new WText("game accepted, beginning game"));
 }
 
 void GameWidget::rejectGame()
 {
+	clearInvitation();
 	server_.initGameAns(this,GEvent::GReject, user_);
 }
 
 void GameWidget::sendAccept()
 {
 	server_.initGameAns(this,GEvent::GAccept, user_);
+}
+
+void GameWidget::clearInvitation()
+{
+	invitationContainer->clear();
+}
+
+void GameWidget::showRejectedMsg(const WString &userName)
+{
+	messages_->addWidget(new WText("user: "
+			+ userName + " rejected your invitation"));
 }
 
 void GameWidget::processGEvent(const GEvent& event)
@@ -488,15 +515,15 @@ void GameWidget::processGEvent(const GEvent& event)
     app->triggerUpdate();
     return;
   }
-
-  if(event.type() == GEvent::But1)
-	  if(but1_->isDisabled())
-		  but1_->enable();
-	  else
-		  but1_->disable();
-
-  if(event.type() == GEvent::But2)
-	  but2_->setValueText("Siema");
+//
+//  if(event.type() == GEvent::But1)
+//	  if(but1_->isDisabled())
+//		  but1_->enable();
+//	  else
+//		  but1_->disable();
+//
+//  if(event.type() == GEvent::But2)
+//	  but2_->setValueText("Siema");
 
   if(event.type() == GEvent::GOffer)
   {
@@ -507,7 +534,7 @@ void GameWidget::processGEvent(const GEvent& event)
 
   if(event.type() == GEvent::GReject)
   {
-	  messages_->clear();
+	  showRejectedMsg(event.user());
   }
 
   if(event.type() == GEvent::GAccept)
