@@ -140,16 +140,43 @@ void GameServer::logout(const WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
-  //delete association between user name and user client object
-  names_clients_.erase(user);
-
   UserSet::iterator i = users_.find(user);
 
   if (i != users_.end()) {
     users_.erase(i);
 
+	  //if this user has game - delete all game structure
+	remGameStructures(user);
+
     postGEvent(GEvent(GEvent::Logout, user));
   }
+
+  //delete association between user name and user client object
+  names_clients_.erase(user);
+}
+
+void GameServer::remGameStructures(const WString& user) 
+{
+	// checks if given name is assigned to a client object
+	if (names_clients_.count(user) == 0)
+		return;
+
+	Client *client = names_clients_[user];
+
+	// if client have some game or waiting for play:
+	if( clients_[client].busy == true ) {
+		if (prepareFighters_.count(client)) { //if waiting for play
+			//erase info about client oponent
+			prepareFighters_.erase(prepareFighters_[client]);
+			prepareFighters_.erase(client);
+		}
+		if (fighters_.count(client)) { //if play game
+			//erase info about client oponent
+			fighters_.erase(fighters_[client]);
+			fighters_.erase(client);
+		}
+	}
+
 }
 
 bool GameServer::changeName(const WString& user, const WString& newUser)
@@ -200,11 +227,6 @@ WString GameServer::suggestGuest()
 void GameServer::sendMessage(const WString& user, const WString& message)
 {
   postGEvent(GEvent(user, message));
-}
-
-//moje
-void GameServer::sendBut(const GEvent::GEType mtyp, const WString& user) {
-	postGEvent(GEvent(mtyp, user));
 }
 
 void GameServer::postGEvent(const GEvent& event)

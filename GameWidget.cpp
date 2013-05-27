@@ -115,8 +115,7 @@ void GameWidget::logout()
 
 void GameWidget::createLayout(WWidget *messages, WWidget *userList,
 				    WWidget *messageEdit,
-				    WWidget *sendButton, WWidget *logoutButton,
-					WWidget *but1, WWidget *but2)
+				    WWidget *sendButton, WWidget *logoutButton)
 {
   /*
    * Create a vertical layout, which will hold 3 rows,
@@ -172,8 +171,6 @@ void GameWidget::createLayout(WWidget *messages, WWidget *userList,
 
   WHBoxLayout *hButtomLayout = new WHBoxLayout();
   vLayout->addLayout(hButtomLayout);
-  hButtomLayout->addWidget(but1);
-  hButtomLayout->addWidget(but2);
 
   setLayout(vLayout);
 }
@@ -196,15 +193,6 @@ void GameWidget::render(WFlags<RenderFlag> flags)
   }
 
   WContainerWidget::render(flags);
-}
-
-//moje
-void GameWidget::sendBut1() {
-	server_.sendBut(GEvent::But1, user_);
-}
-
-void GameWidget::sendBut2() {
-	server_.sendBut(GEvent::But2, user_);
 }
 
 bool GameWidget::startChat(const WString& user)
@@ -235,13 +223,7 @@ bool GameWidget::startChat(const WString& user)
     sendButton_ = new WPushButton("Send");
     WPushButton *logoutButton = new WPushButton("Logout");
 
-	//moje: buttony moje
-	WPushButton *but1 = new WPushButton("But1");
-	WPushButton *but2 = new WPushButton("But2");
-	but1_ = but1; but2_ = but2;
-//	but1_->setCheckable(true);
-
-    createLayout(messages_, userList_, messageEdit_, sendButton_, logoutButton, but1, but2);
+    createLayout(messages_, userList_, messageEdit_, sendButton_, logoutButton);
 
     /*
      * Connect event handlers:
@@ -267,11 +249,6 @@ bool GameWidget::startChat(const WString& user)
     messageEdit_->enterPressed().connect(clearInput_);
     sendButton_->clicked().connect(messageEdit_, &WLineEdit::setFocus);
     messageEdit_->enterPressed().connect(messageEdit_, &WLineEdit::setFocus);
-
-	//moje: pod��czenie
-	but1->clicked().connect(this, &GameWidget::sendBut1);
-	but2->clicked().connect(this, &GameWidget::sendBut2);
-	but2->clicked().connect(this, &GameWidget::sendBut1);
 
     // Prevent the enter from generating a new line, which is its default
     // action
@@ -400,17 +377,17 @@ void GameWidget::sendInvitation()
 		bool b = server_.initGame(this, user_, userBox_->currentText());
 		if(b == false) //becouse user can be busy
 		{
-			Wt::WString msg = "User that U are trying to invite is currently playing game";
+			Wt::WString msg = "User that U are trying to invite is currently playing game\n";
 			messages_->addWidget(new WText(msg));
 		}
 		else
 		{
-			messages_->addWidget(new WText("Waiting for player response"));
+			messages_->addWidget(new WText("Waiting for player response\n"));
 		}
 	}
 	else
 	{
-		messages_->addWidget(new WText("U can't invite yourself!"));
+		messages_->addWidget(new WText("U can't invite yourself!\n"));
 	}
 }
 
@@ -464,6 +441,7 @@ void GameWidget::rejectGame()
 
 void GameWidget::sendAccept()
 {
+	clearInvitation();
 	server_.initGameAns(this,GEvent::GAccept, user_);
 }
 
@@ -515,15 +493,6 @@ void GameWidget::processGEvent(const GEvent& event)
     app->triggerUpdate();
     return;
   }
-//
-//  if(event.type() == GEvent::But1)
-//	  if(but1_->isDisabled())
-//		  but1_->enable();
-//	  else
-//		  but1_->disable();
-// vv
-//  if(event.type() == GEvent::But2)
-//	  but2_->setValueText("Siema");
 
   if(event.type() == GEvent::GOffer)
   {
@@ -540,6 +509,22 @@ void GameWidget::processGEvent(const GEvent& event)
   if(event.type() == GEvent::GAccept)
   {
 	  beginGame();
+  }
+
+  if(event.type() == GEvent::Logout) {
+	  // powinnismy reagowac w zaleznosci od stanu w jakim znajduje sie w danej chwili dany klient
+	  // np jezeli event.user() != user_ -> no to znaczy ze jakis user sie wylogowal
+	  // no i jesli prowadzilismy z nim rozgrywke lub jesli czekalismy na rozgrywke od niego no to lipa
+	  
+	  // niestety ktos bedzie musial przechowywac swoj stan oraz pamietac z kim chce grac i z kim obecnie gra
+	  // moze to robic ta nowa klasa odpowiedzialna za caly Widget gry
+	  // i tutaj bysmy wywolywali metody z tej klasy - to jest chyba dobra opcja
+
+	  /*
+	  if (event.user() == boardWidget_->oponent()) {
+		delete boardWidget_; // niech destruktor wyczysci widok okna gry - zeby znow dalo sie zaczac gre z kims innym
+	  }
+	  */
   }
 
   bool display = event.type() != GEvent::Message
@@ -573,8 +558,9 @@ void GameWidget::processGEvent(const GEvent& event)
 		       + messages_->jsRef() + ".scrollHeight;");
 
     /* If this message belongs to another user, play a received sound */
-    if (event.user() != user_ && messageReceived_)
-      messageReceived_->play();
+  //  if (event.user() != user_ && messageReceived_)
+  //    messageReceived_->play();
+  
   }
 
   /*

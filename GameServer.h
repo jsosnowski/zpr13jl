@@ -83,6 +83,8 @@ public:
    */
   void logout(const Wt::WString& user);
 
+  void remGameStructures(const WString& user);
+
   /*! \brief Changes the name.
    */
   bool changeName(const Wt::WString& user, const Wt::WString& newUser);
@@ -94,7 +96,6 @@ public:
   /*! \brief Send a message on behalve of a user.
    */
   void sendMessage(const Wt::WString& user, const Wt::WString& message);
-  void sendBut(const GEvent::GEType wtyp, const Wt::WString& user); //moje
 
   /*! \brief Typedef for a collection of user names.
    */
