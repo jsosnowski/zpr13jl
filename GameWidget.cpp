@@ -521,7 +521,7 @@ void GameWidget::processGEvent(const GEvent& event)
 //		  but1_->enable();
 //	  else
 //		  but1_->disable();
-//
+// vv
 //  if(event.type() == GEvent::But2)
 //	  but2_->setValueText("Siema");
 
