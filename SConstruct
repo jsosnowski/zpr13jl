@@ -4,7 +4,7 @@ env = Environment()
 env.Append(CPPPATH = ['/usr/include', '/usr/local/include'])
 
 #       Add compile-time flags
-env.Append(CCFLAGS=['-Wall','-g'])
+env.Append(CCFLAGS=['-Wall','-g', '-pedantic'])
 
 # libraries to link against
 # Notice you dont need the '-l', since SCons is platform independent

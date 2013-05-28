@@ -17,6 +17,7 @@ public:
 	{ };
 	
 	PEvent type() const { return type_; };
+	/** get field position on board */
 	int getField() const { return field_; };
 
 private:

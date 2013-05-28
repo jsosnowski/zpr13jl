@@ -9,6 +9,10 @@
 #define BOARDWIDGET_H_
 
 #include <boost/bind.hpp>
+#include <boost/foreach.hpp>
+
+#include <algorithm>
+#include <cmath>
 
 #include <Wt/WContainerWidget>
 #include <Wt/WPushButton>
@@ -38,6 +42,8 @@ public:
 
 	/** Manage with playing event processing */
 	void processPEvent(const PlayEvent& eve);
+	/** def of board size */
+	static const int BOARD_SIZE = 3;
 
 private:
 	/** pointer to client */
@@ -48,7 +54,7 @@ private:
 	Side gameSide_;
 	/** fields vector */
 	std::vector<Field *> fields_;
-	/** binded functor to button clicked causing button change
+	/** binded functor to button clicked, causing button change
 	 * depend on game side
 	 */
 	void markField(int);
@@ -56,8 +62,12 @@ private:
 	void markForeignMove(int);
 	/** check if game is finished */
 	bool isFinished();
+	/** move causing field disable */
 	void disableAllFields(bool flag);
-
+	/** sets side */
+	void setFieldSide(int fieldNo, Side);
+	/** sets button text */
+	void setFieldText(int fieldNo, Wt::WString);
 };
 
 #endif /* BOARDWIDGET_H_ */

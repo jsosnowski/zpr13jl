@@ -26,6 +26,8 @@ public:
 	BoardWidget::Side 	getSide() 			 const	{ return side_; }
 	short 				getPositionOnBoard() const 	{ return positionOnBoard; }
 
+	void 				setSide(BoardWidget::Side side)  { this->side_ = side;}
+
 	virtual ~Field();
 };
 
