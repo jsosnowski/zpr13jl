@@ -66,7 +66,11 @@ public:
   bool initGameAns(Client *client, const GEvent::GEType ans,
 		  const Wt::WString &clientName);//, const Wt::WString &oponent);
 
-  bool sendPlayEvent(Client *client, const Wt::WString& name, const PlayEvent pEvent);
+  /**
+  * @brief Sending pEvent message to the client's oponent.
+  * oponent session is known in the server
+  **/
+  bool sendPlayEvent(const Wt::WString& clientName, const PlayEvent pEvent);
 
   /*! \brief Disconnect from the chat server.
    *

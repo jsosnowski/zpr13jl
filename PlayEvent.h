@@ -12,12 +12,12 @@ public:
 		:type_(None), field_(-1)
 	{ };
 
-	PlayEvent(PEvent t, int f)
+	PlayEvent(PEvent t, int f = -1)
 		: type_(t), field_(f)
 	{ };
 	
-	PEvent type() { return type_; };
-	int getField() { return field_; };
+	PEvent type() const { return type_; };
+	int getField() const { return field_; };
 
 private:
 	PEvent type_;

@@ -434,14 +434,14 @@ void GameWidget::beginGame()
 {
 	messages_->addWidget(new WText("game accepted, beginning game"));
 	//passed this, to know which client's board is
-	boardWidget_ = new BoardWidget(this, server_, BoardWidget::Naughts, messages_);
+	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Naughts, messages_);
 }
 
 void GameWidget::sendAccept()
 {
 	clearInvitation();
 	server_.initGameAns(this,GEvent::GAccept, user_);
-	boardWidget_ = new BoardWidget(this, server_, BoardWidget::Crosses, messages_);
+	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Crosses, messages_);
 }
 
 void GameWidget::rejectGame()
@@ -532,6 +532,9 @@ void GameWidget::processGEvent(const GEvent& event)
 	  }
 	  */
   }
+
+  if (event.type() == GEvent::PEvent)
+	  boardWidget_->processPEvent(event.getPEvent());
 
   bool display = event.type() != GEvent::Message
     || !userList_

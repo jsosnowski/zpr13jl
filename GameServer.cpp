@@ -111,11 +111,17 @@ bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 	return true;
 }
 
-bool GameServer::sendPlayEvent(Client *client, const Wt::WString& name, const PlayEvent pEvent)
+bool GameServer::sendPlayEvent(const Wt::WString& clientName, const PlayEvent pEvent)
 {
+	boost::recursive_mutex::scoped_lock lock(mutex_);
+
+	if (names_clients_.count(clientName) == 0)
+		return false;
+	Client *client = names_clients_[clientName];
+
 	if (fighters_.count(client) != 0) {
 		Client *oponent = fighters_[client];
-		postGEvent(GEvent(name, pEvent), clients_[oponent].sessionId);
+		postGEvent(GEvent(clientName, pEvent), clients_[oponent].sessionId);
 
 		return true;
 	}

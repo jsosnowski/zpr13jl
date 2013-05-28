@@ -32,13 +32,16 @@ public:
 	/** def. of game sides */
 	enum Side { Naughts, Crosses, None };
 	/** Constructor */
-	BoardWidget(const GameServer::Client *, GameServer &, Side , Wt::WContainerWidget *);
+	BoardWidget(const Wt::WString &, GameServer &, Side , Wt::WContainerWidget *);
 	/** destructor */
 	virtual ~BoardWidget();
 
+	/** Manage with playing event processing */
+	void processPEvent(const PlayEvent& eve);
+
 private:
 	/** pointer to client */
-	const GameServer::Client *client_;
+	const Wt::WString& clientName_;
 	/** server ref */
 	GameServer &server_;
 	/** naughts or crosses ?*/
@@ -53,7 +56,8 @@ private:
 	void markForeignMove(int);
 	/** check if game is finished */
 	bool isFinished();
-	void disableAllFields();
+	void disableAllFields(bool flag);
+
 };
 
 #endif /* BOARDWIDGET_H_ */
