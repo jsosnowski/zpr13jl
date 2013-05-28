@@ -22,4 +22,5 @@ env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 
 # Compile and link the binary
 env.Program('game',['mainApp.cpp', 'GameWidget.h','GameWidget.cpp',
-'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp', 'BoardWidget.h', 'BoardWidget.cpp'])
+'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp', 'BoardWidget.h', 'BoardWidget.cpp',
+'Field.h', 'Field.cpp'])

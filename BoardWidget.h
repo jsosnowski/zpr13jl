@@ -8,25 +8,31 @@
 #ifndef BOARDWIDGET_H_
 #define BOARDWIDGET_H_
 
+#include <boost/bind.hpp>
+
 #include <Wt/WContainerWidget>
 #include <Wt/WPushButton>
 
 #include "GameServer.h"
 
+class Field;
+
 /**
  * represents new widget for game board
+ *  __________
+ * |0 | 1 | 2 |
+ * |3 | 4 | 5 |
+ * |6 | 7 | 8 |
+ *  ----------
+ *
  * */
 class BoardWidget : public Wt::WContainerWidget
 {
 public:
 	/** def. of game sides */
-	enum Side { Naughts, Crosses };
+	enum Side { Naughts, Crosses, None };
 	/** Constructor */
 	BoardWidget(const GameServer::Client *, GameServer &, Side , Wt::WContainerWidget *);
-	/** binded functor to button clicked causing button change
-	 * depend on game side
-	 */
-	void markField();
 	/** destructor */
 	virtual ~BoardWidget();
 
@@ -37,9 +43,17 @@ private:
 	GameServer &server_;
 	/** naughts or crosses ?*/
 	Side gameSide_;
-	/** represents board */
-	//button, 0 - non marked, 1 - o, 2 - x
-	std::vector<Wt::WPushButton *> fields_;
+	/** fields vector */
+	std::vector<Field *> fields_;
+	/** binded functor to button clicked causing button change
+	 * depend on game side
+	 */
+	void markField(int);
+	/** marking foreign move on board */
+	void markForeignMove(int);
+	/** check if game is finished */
+	bool isFinished();
+	void disableAllFields();
 };
 
 #endif /* BOARDWIDGET_H_ */
