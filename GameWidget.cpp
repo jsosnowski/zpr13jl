@@ -204,9 +204,10 @@ bool GameWidget::startChat(const WString& user)
    */
   if (server_.login(user)) {
     loggedIn_ = true;
+    user_ = user;
     connect();
 
-    user_ = user;    
+    user_ = user;
 
     clear();
     userNameEdit_ = 0;

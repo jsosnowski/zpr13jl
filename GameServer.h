@@ -66,6 +66,8 @@ public:
   bool initGameAns(Client *client, const GEvent::GEType ans,
 		  const Wt::WString &clientName);//, const Wt::WString &oponent);
 
+  bool sendPlayEvent(Client *client, const Wt::WString& name, const PlayEvent pEvent);
+
   /*! \brief Disconnect from the chat server.
    *
    * Returns whether the client has been disconnected (or false if the client

@@ -8,11 +8,13 @@
 #ifndef GEVENT_H_
 #define GEVENT_H_
 
+#include "PlayEvent.h"
+
 #include <Wt/WSignal>
 #include <Wt/WString>
 #include <Wt/WServer>
 
-/*! \brief Encapsulate a chat event.
+/*! \brief Encapsulate a game event.
  */
 class GEvent
 {
@@ -20,7 +22,7 @@ public:
   /*! \brief Enumeration for the event type.
    */
   typedef enum GEType { Login, Logout, Rename, Message,
-	  GOffer, GAccept, GReject, But1, But2 }GEType;
+	  GOffer, GAccept, GReject, PEvent }GEType;
 
   /*! \brief Get the event type.
    */
@@ -38,6 +40,10 @@ public:
    */
   const Wt::WString& data() const { return data_; }
 
+  /*! \brief Get PlayEvent object
+  */
+  PlayEvent getPEvent() const {return pEvent_; }
+
   /*! \brief Get the message formatted as HTML, rendered for the given user.
    *
    * The \p format indicates how the message should be formatted.
@@ -50,6 +56,7 @@ private:
   Wt::WString user_;
   Wt::WString data_;
   Wt::WString message_;
+  PlayEvent pEvent_;
 
   /*
    * Both user and html will be formatted as html
@@ -61,6 +68,12 @@ private:
   GEvent(GEType type, const Wt::WString& user,
 	    const Wt::WString& data = Wt::WString::Empty)
     : type_(type), user_(user), data_(data)
+  { }
+
+  GEvent(const Wt::WString& user,
+	    PlayEvent pE)
+		:type_(PEvent), user_(user), pEvent_(pE), 
+		message_(Wt::WString("PlayEvent")), data_(Wt::WString::Empty)
   { }
 
   friend class GameServer;
