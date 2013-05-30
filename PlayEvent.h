@@ -18,6 +18,11 @@
 #define PLAYEVENT_H_
 
 /**
+ * @addtogroup zprgame
+ */
+/*@{*/
+
+/**
 * @brief Class which store Play Event
 * @detail This event is associated only with game.
 **/
@@ -73,4 +78,7 @@ private:
 	int field_;
 };
 
+/*@{*/
+
 #endif /* PLAYEVENT_H_ */
+

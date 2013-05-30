@@ -12,6 +12,11 @@
 #include "BoardWidget.h"
 
 /**
+ * @addtogroup zprgame
+ */
+/*@{*/
+
+/**
  * class represents one field on board
  */
 class Field {
@@ -30,5 +35,7 @@ public:
 
 	virtual ~Field();
 };
+
+/*@{*/
 
 #endif /* FIELD_H_ */

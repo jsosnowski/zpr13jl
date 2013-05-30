@@ -22,6 +22,11 @@
 class Field;
 
 /**
+ * @addtogroup zprgame
+ */
+/*@{*/
+
+/**
  * represents new widget for game board
  *  __________
  * |0 | 1 | 2 |
@@ -74,4 +79,7 @@ private:
 	void setFieldText(int fieldNo, Wt::WString);
 };
 
+/*@{*/
+
 #endif /* BOARDWIDGET_H_ */
+

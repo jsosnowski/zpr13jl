@@ -37,7 +37,7 @@ namespace Wt {
 class GEvent;
 
 /**
- * \defgroup chatexample Chat example
+ * \defgroup zprgame Noughts and Crosses
  */
 /*@{*/
 

@@ -27,7 +27,7 @@
 using namespace Wt;
 
 /**
- * @addtogroup chatexample
+ * @addtogroup zprgame
  */
 /*@{*/
 

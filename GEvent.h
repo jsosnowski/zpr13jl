@@ -23,6 +23,11 @@
 #include <Wt/WString>
 #include <Wt/WServer>
 
+/**
+ * @addtogroup zprgame
+ */
+/*@{*/
+
 /*! \brief Encapsulate a game event.
  */
 class GEvent
@@ -88,5 +93,6 @@ private:
   friend class GameServer;
 };
 
+/*@{*/
 
 #endif /* GEVENT_H_ */

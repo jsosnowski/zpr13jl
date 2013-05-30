@@ -33,30 +33,37 @@ namespace Wt {
 
 #include "GEvent.h"
 
+typedef boost::function<void (const GEvent&)> GameEventCallback;
+
 /**
- * @addtogroup chatexample
+ * @addtogroup zprgame
  */
 /*@{*/
 
-typedef boost::function<void (const GEvent&)> GameEventCallback;
-
-/*! \brief A simple chat server
- */
+/** 
+ * @brief A noughts and crosses game server.
+ * @details Provide client session objects, views and communication between clients.
+ **/
 class GameServer : boost::noncopyable
 {
 public:
   /*
-   * A reference to a client.
-   */
+   * @brief Class which provide reference to client.
+   * @details This helps server with recognizing clients process
+   *          By using pointers to this objects as a base of Widget (GameWidget)
+   **/
   class Client
   {
   };
 
-  /*! \brief Create a new chat server.
-   */
+  /** 
+  * @brief Create a new game server.
+  * @param[in] server Wt::WServer respond to lower connection service.
+  **/
   GameServer(Wt::WServer& server);
 
-  /*! \brief Connects to the chat server.
+  /**
+   * @brief Connects to the game server.
    *
    * The passed callback method is posted to when a new chat event is
    * received.
