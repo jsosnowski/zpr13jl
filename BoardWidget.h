@@ -36,7 +36,7 @@ public:
 	/** def. of game sides */
 	enum Side { Naughts, Crosses, None };
 	/** Constructor */
-	BoardWidget(const Wt::WString &, GameServer &, Side , Wt::WContainerWidget *);
+	BoardWidget(const Wt::WString &,const Wt::WString&, GameServer &, Side , Wt::WContainerWidget *);
 	/** destructor */
 	virtual ~BoardWidget();
 
@@ -47,7 +47,11 @@ public:
 
 private:
 	/** pointer to client */
-	const Wt::WString& clientName_;
+	const Wt::WString clientName_;
+	/** oponent name */
+	const Wt::WString opponent_;
+	/** main contener - Message contener */
+	Wt::WContainerWidget *mess_;
 	/** server ref */
 	GameServer &server_;
 	/** naughts or crosses ?*/

@@ -133,6 +133,11 @@ bool GameServer::sendPlayEvent(const Wt::WString& clientName, const PlayEvent pE
 		Client *oponent = fighters_[client];
 		postGEvent(GEvent(clientName, pEvent), clients_[oponent].sessionId);
 
+		if (pEvent.ifEndOfGame()) {
+			postGEvent(GEvent("", pEvent), clients_[client].sessionId);
+			remGameStructures(clientName);
+		}
+
 		return true;
 	}
 

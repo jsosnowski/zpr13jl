@@ -104,6 +104,7 @@ private:
   Wt::JSlot             clearInput_;
 
   Wt::WString           user_;
+  Wt::WString           tmpOpponent;
 
   Wt::WLineEdit        *userNameEdit_;
   Wt::WText            *statusMsg_;

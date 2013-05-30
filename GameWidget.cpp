@@ -226,7 +226,7 @@ bool GameWidget::startChat(const WString& user)
     userList_ = new WContainerWidget();
     messageEdit_ = new WTextArea();
     messageEdit_->setRows(2);
-    messageEdit_->setFocus();
+    //messageEdit_->setFocus();
 
     // Display scroll bars if contents overflows
     messages_->setOverflow(WContainerWidget::OverflowAuto);
@@ -342,6 +342,7 @@ void GameWidget::updateUsers()
 		userBox_ = new WSelectionBox(userList_);
 
 		inviteButton = new WPushButton("Send invitation", userList_);
+		inviteButton->setFocus();
 
 		GameServer::UserSet users = server_.users();
 
@@ -350,8 +351,8 @@ void GameWidget::updateUsers()
 			userBox_->addItem(u);
 		});
 
-		userBox_->activated().connect(
-				this, &GameWidget::inviteClick);
+		/*userBox_->activated().connect(
+				this, &GameWidget::inviteClick);*/
 		inviteButton->clicked().connect(
 				this, &GameWidget::sendInvitation);
 
@@ -412,6 +413,7 @@ void GameWidget::sendInvitation()
 			messages_->addWidget(new WText("Waiting for <b>" + 
 				playerName + "</b> response"));
 			messages_->addWidget(new WBreak());
+			tmpOpponent = playerName;
 		}
 	}
 	else
@@ -421,13 +423,13 @@ void GameWidget::sendInvitation()
 	}
 }
 
-void GameWidget::inviteClick()
-{
-	std::cout << std::endl;
-	std::cout << "$$$$$$$$$$$ clicked $$$$$$$$$$";
-	std::cout << userBox_->currentText() << std::endl;
-	std::cout << std::endl;
-}
+//void GameWidget::inviteClick()
+//{
+//	std::cout << std::endl;
+//	std::cout << "$$$$$$$$$$$ clicked $$$$$$$$$$";
+//	std::cout << userBox_->currentText() << std::endl;
+//	std::cout << std::endl;
+//}
 
 void GameWidget::newMessage()
 { }
@@ -451,6 +453,7 @@ void GameWidget::drawInvitation(const GEvent &event)
 	WText *w = new WText("User: <b>"+ event.user() +"</b> invited U",
 			invitationContainer);
 	invitationContainer->addWidget(new WBreak());
+	tmpOpponent = event.user();
 	WPushButton *accept = new WPushButton("Accept", invitationContainer);
 	WPushButton *reject = new WPushButton("Reject", invitationContainer);
 
@@ -464,9 +467,9 @@ void GameWidget::beginGame()
 	messages_->addWidget(new WText("Game accepted, beginning game"));
 	messages_->addWidget(new WBreak());
 	//passed this, to know which client's board is
-	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Naughts, messages_);
-	userList_->disable();
-	//userBox_->disable();
+	boardWidget_ = new BoardWidget(user_, tmpOpponent, server_, BoardWidget::Naughts, messages_);
+	// after game started, the userList is no necessary
+	userList_->disable(); // it will be enable after game end
 }
 
 void GameWidget::sendAccept()
@@ -475,9 +478,9 @@ void GameWidget::sendAccept()
 	this->messages_->clear();
 	messages_->addWidget(new WText("Enjoy play:"));
 	server_.initGameAns(this,GEvent::GAccept, user_);
-	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Crosses, messages_);
-	userList_->disable();
-	//userBox_->disable();
+	boardWidget_ = new BoardWidget(user_, tmpOpponent, server_, BoardWidget::Crosses, messages_);
+	// after game started, the userList is no necessary
+	userList_->disable(); // it will be enable after game end
 }
 
 void GameWidget::rejectGame()
@@ -571,8 +574,14 @@ void GameWidget::processGEvent(const GEvent& event)
 	  */
   }
 
-  if (event.type() == GEvent::PEvent)
+  if (event.type() == GEvent::PEvent && !event.user().empty())
 	  boardWidget_->processPEvent(event.getPEvent());
+
+  if (event.type() == GEvent::PEvent && event.getPEvent().ifEndOfGame()) {
+	  userBox_->setDisabled(false);
+	  inviteButton->setDisabled(false);
+	  userList_->setDisabled(false);
+  }
 
   bool display = event.type() != GEvent::Message
     || !userList_

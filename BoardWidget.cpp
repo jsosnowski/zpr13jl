@@ -8,9 +8,10 @@
 #include "BoardWidget.h"
 #include "Field.h"
 
-BoardWidget::BoardWidget(const Wt::WString& client,
+BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 		GameServer &serv, Side side, Wt::WContainerWidget *parent = 0)
 	: clientName_(client),
+	  opponent_(opponent),
 	  server_(serv),
 	  gameSide_(side),
 	  Wt::WContainerWidget(parent)
@@ -54,6 +55,11 @@ void BoardWidget::markField(int a)
 		std::cout << "!!!!!!!!!!!! KONIEC GRY !!!!!!!!!!!!";
 		std::cout << std::endl;
 		server_.sendPlayEvent(clientName_, PlayEvent(PlayEvent::Win));
+
+		this->clear();
+		//Wt::WString m("You win");
+		Wt::WString m("<span class='chat-info'><b>You</b> win!!!</span>");
+		this->addWidget(new Wt::WText(m));
 	}
 }
 
@@ -184,6 +190,10 @@ void BoardWidget::setFieldSide(int fieldNo, Side side)
 
 void BoardWidget::processPEvent(const PlayEvent& eve)
 {
+	Wt::WString ret = "<span class='chat-info'><b>";
+	ret += this->opponent_;
+	ret += "</b> ";
+
 	switch(eve.type())
 	{
 	case PlayEvent::Move:
@@ -192,16 +202,21 @@ void BoardWidget::processPEvent(const PlayEvent& eve)
 			this->markForeignMove(f);
 		break;
 	case PlayEvent::Win:
-		//robimy cos jesli nasz przeciwnik oznajmil ze wygral
+		this->clear();
+		ret += "win.</span>";
+		this->addWidget(new Wt::WText(ret));
 		break;
 	case PlayEvent::Pass:
-		//costam robimy na wypadek jesli nasz przeciwnik sie poddal
+		this->clear();
+		ret += "pass.</span>";
+		this->addWidget(new Wt::WText(ret));
 		break;
 	case PlayEvent::Draw:
-		//robimy cos jesli nasz przeciwnik mowi ze jest remis
+		this->clear();
+		ret += "draw.</span>";
+		this->addWidget(new Wt::WText(ret));
 		break;
 	default:
-		//domyslnie robimy to:
 		break;
 	}
 }
