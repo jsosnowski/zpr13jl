@@ -56,9 +56,9 @@ GameWidget::GameWidget(GameServer& server,
 
 GameWidget::~GameWidget()
 {
-  delete messageReceived_;
   logout();
   disconnect();
+  delete messageReceived_;
 }
 
 void GameWidget::connect()
@@ -335,6 +335,9 @@ void GameWidget::updateUsers()
 {
 	if (userList_)
 	{
+		// checks enablement state of userList before update
+		// new list should have the same state
+		const bool ifDisable = userList_->isDisabled();
 		userList_->clear();
 		userBox_ = new WSelectionBox(userList_);
 
@@ -351,6 +354,15 @@ void GameWidget::updateUsers()
 				this, &GameWidget::inviteClick);
 		inviteButton->clicked().connect(
 				this, &GameWidget::sendInvitation);
+
+		// set appropriate enablement state from previous widget
+		if (ifDisable) {
+			userBox_->disable();
+			inviteButton->disable();
+			userList_->disable();
+		}
+
+
 //		BOOST_FOREACH(Wt::WString i, users)
 //		{
 //			std::cout << "ilosc: " << users.size() << std::endl;
@@ -387,19 +399,25 @@ void GameWidget::sendInvitation()
 	if(user_ != userBox_->currentText())
 	{
 		bool b = server_.initGame(this, user_, userBox_->currentText());
+		Wt::WString playerName = userBox_->currentText();
 		if(b == false) //becouse user can be busy
 		{
-			Wt::WString msg = "User that U are trying to invite is currently playing game\n";
+			Wt::WString msg = "User: <b>" + playerName + 
+				"</b> that you are trying to invite is currently playing game";
 			messages_->addWidget(new WText(msg));
+			messages_->addWidget(new WBreak());
 		}
 		else
 		{
-			messages_->addWidget(new WText("Waiting for player response\n"));
+			messages_->addWidget(new WText("Waiting for <b>" + 
+				playerName + "</b> response"));
+			messages_->addWidget(new WBreak());
 		}
 	}
 	else
 	{
-		messages_->addWidget(new WText("U can't invite yourself!\n"));
+		messages_->addWidget(new WText("You can't invite yourself!"));
+		messages_->addWidget(new WBreak());
 	}
 }
 
@@ -430,7 +448,7 @@ void GameWidget::updateUser()
 void GameWidget::drawInvitation(const GEvent &event)
 {
 	invitationContainer = new WContainerWidget(messages_);
-	WText *w = new WText("User: " + event.user() + " invited U",
+	WText *w = new WText("User: <b>"+ event.user() +"</b> invited U",
 			invitationContainer);
 	invitationContainer->addWidget(new WBreak());
 	WPushButton *accept = new WPushButton("Accept", invitationContainer);
@@ -442,21 +460,30 @@ void GameWidget::drawInvitation(const GEvent &event)
 
 void GameWidget::beginGame()
 {
-	messages_->addWidget(new WText("game accepted, beginning game"));
+	messages_->clear();
+	messages_->addWidget(new WText("Game accepted, beginning game"));
+	messages_->addWidget(new WBreak());
 	//passed this, to know which client's board is
 	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Naughts, messages_);
+	userList_->disable();
+	//userBox_->disable();
 }
 
 void GameWidget::sendAccept()
 {
 	clearInvitation();
+	this->messages_->clear();
+	messages_->addWidget(new WText("Enjoy play:"));
 	server_.initGameAns(this,GEvent::GAccept, user_);
 	boardWidget_ = new BoardWidget(user_, server_, BoardWidget::Crosses, messages_);
+	userList_->disable();
+	//userBox_->disable();
 }
 
 void GameWidget::rejectGame()
 {
 	clearInvitation();
+	this->messages_->clear();
 	server_.initGameAns(this,GEvent::GReject, user_);
 }
 
@@ -468,8 +495,9 @@ void GameWidget::clearInvitation()
 
 void GameWidget::showRejectedMsg(const WString &userName)
 {
-	messages_->addWidget(new WText("user: "
-			+ userName + " rejected your invitation"));
+	messages_->addWidget(new WText("user: <b>"
+			+ userName + "</b> rejected your invitation"));
+	messages_->addWidget(new WBreak());
 }
 
 void GameWidget::processGEvent(const GEvent& event)
@@ -577,8 +605,8 @@ void GameWidget::processGEvent(const GEvent& event)
 		       + messages_->jsRef() + ".scrollHeight;");
 
     /* If this message belongs to another user, play a received sound */
-  //  if (event.user() != user_ && messageReceived_)
-  //    messageReceived_->play();
+    if (event.user() != user_ && messageReceived_)
+      messageReceived_->play();
   
   }
 
