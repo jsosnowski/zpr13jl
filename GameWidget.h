@@ -1,9 +1,18 @@
-// This may look like C code, but it's really -*- C++ -*-
-/*
- * Copyright (C) 2008 Emweb bvba, Heverlee, Belgium.
- *
- * See the LICENSE file for terms of use.
- */
+/**
+* @file GameWidget.h
+*
+* @date 29-05-2013
+*
+* @author Gadawski £ukasz, Sosnowski Jacek
+*
+* @brief Implementation of the GameWidget class.
+*
+* @par Project
+* This is a part of project realized on Warsaw University of Technology
+* on ZPR lectures. Project was created to provide noughts and crosses game
+* implementation. The application consists of server process wich afford 
+* widget object with all game functionality to each client session.
+*/
 
 #ifndef GAMEWIDGET_H_
 #define GAMEWIDGET_H_

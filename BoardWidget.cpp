@@ -92,7 +92,7 @@ bool BoardWidget::isFinished()
 			{
 				++row;
 			}
-			// check in columns
+			// check in column
 			if ((f->getPositionOnBoard() % BoardWidget::BOARD_SIZE) == i)
 			{
 				row = 0;
