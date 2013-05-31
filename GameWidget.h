@@ -41,34 +41,42 @@ class GEvent;
  */
 /*@{*/
 
-/*! \brief A self-contained chat widget.
+/** 
+ * @brief A self-contained game widget.
  */
 class GameWidget : public Wt::WContainerWidget,
 			 public GameServer::Client
 {
 public:
-  /*! \brief Create a chat widget that will connect to the given server.
+  /**
+   * @brief Create a game widget that will connect to the given server.
    */
   GameWidget(GameServer& server, Wt::WContainerWidget *parent = 0);
 
-  /*! \brief Delete a chat widget.
+  /**
+   * @brief Delete a game widget.
    */
   ~GameWidget();
 
   void connect();
   void disconnect();
 
-//  void inviteClick(const Wt::WString&);
-  void inviteClick();
+  //void inviteClick();
+  /**
+  * @brief Sends game invitation (offer) to client which is choosen by right widget panel (from user list)
+  * @details Might not be done correctly for example when you want to invite yourself.
+  **/
   void sendInvitation();
 
-  /*! \brief Show a simple login screen.
+  /**
+   * @brief Show a simple login screen.
    */
   void letLogin();
 
-  /*! \brief Start a chat for the given user.
+  /**
+   * @brief Start a game for the given user.
    *
-   * Returns false if the user could not login.
+   * @return false if the user could not login.
    */
   bool startChat(const Wt::WString& user);
 
@@ -76,8 +84,10 @@ public:
 
   GameServer& server() { return server_; }
 
+  /** @brief Returns number of users */
   int userCount() { return users_.size(); }
 
+  /** @brief Returns this user name */
   const Wt::WString& userName() const { return user_; }
 
 protected:
@@ -125,19 +135,41 @@ private:
 
   Wt::WPushButton *inviteButton;
 
+  /** @brief Slot associate with Login button. Cause login action */
   void login();
   void send();
   void updateUserOld();
   void updateUser();
 
+  /**
+  * @brief Slot associate with Reject WPushButton
+  * @details Send to opponent side that we don't want play with him.
+  **/
   void rejectGame();
+  /**
+  * @brief Slot associate with Accept WPushButton.
+  * @details Send to opponent side that we want to take challenge and play with him 
+  **/
   void sendAccept();
+  /**
+  * @brief This method is call when processGEvent obtains event 
+  *        which tells that game which we waiting for is accepted - game is start
+  **/
   void beginGame();
+  /**
+  * @brief This method is called when processGEvent obtains event
+  *        which tells that game offer made by this client is rejected by opponent side
+  **/
   void showRejectedMsg(const Wt::WString &);
+  /** @brief Clear invitation offer component */
   void clearInvitation();
+  /** @brief Printing (drawing) invitation offer component on the screen */
   void drawInvitation(const GEvent&);
 
-  /* called from another session */
+  /**
+  * @brief Function callback called from another session to process given event
+  * @param[in] event to process on client side
+  */
   void processGEvent(const GEvent& event);
 };
 

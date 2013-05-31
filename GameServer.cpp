@@ -101,7 +101,6 @@ bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 
 		fighters_[client] = op;
 		fighters_[op] = client;
-//		postGEvent(GEvent(GEvent::GEType::GAccept, clientName), clients_[client].sessionId);
 	}
 	else {
 		// in case of reject fighting all of them are free
@@ -110,7 +109,6 @@ bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 
 		clients_[client].busy = false;
 		clients_[op].busy = false;
-//		postGEvent(GEvent(GEvent::GEType::GReject, clientName), clients_[client].sessionId);
 	}
 
 	prepareFighters_.erase(client);
@@ -297,18 +295,12 @@ void GameServer::postGEvent(const GEvent& event,
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
-  //TODO app don't used
-  WApplication *app = WApplication::instance();
-
   for (ClientMap::const_iterator i = clients_.begin(); i != clients_.end();
        ++i) {
 
-//    if (app && app->sessionId() == i->second.sessionId)
-//      i->second.eventCallback(event);
-//    else
-		if (i->second.sessionId == toSession)
-			server_.post(i->second.sessionId,
-				boost::bind(i->second.eventCallback, event));
+	if (i->second.sessionId == toSession)
+		server_.post(i->second.sessionId,
+			boost::bind(i->second.eventCallback, event));
   }
 }
 

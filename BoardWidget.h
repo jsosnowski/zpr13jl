@@ -38,17 +38,18 @@ class Field;
 /**
  * @brief Represents new widget for game board
  * @details It produce visual board like:
- *  __________
- * |0 | 1 | 2 |
- * |3 | 4 | 5 |
- * |6 | 7 | 8 |
- *  ----------
+ * Number of each field:\n
+ *   __________\n
+ *  |0 | 1 | 2 | \n
+ *  |3 | 4 | 5 | \n
+ *  |6 | 7 | 8 | \n
+ *   ---------- \n
  *
  * */
 class BoardWidget : public Wt::WContainerWidget
 {
 public:
-	/** def. of game sides */
+	/** definition of game sides */
 	enum Side { Naughts, Crosses, None };
 	/** Constructor */
 	BoardWidget(const Wt::WString &,const Wt::WString&, GameServer &, Side , Wt::WContainerWidget *);

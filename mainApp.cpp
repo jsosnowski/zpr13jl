@@ -5,7 +5,7 @@
 *
 * @author Gadawski £ukasz, Sosnowski Jacek
 *
-* @brief Implementation of the main application function and ChatApplication class.
+* @brief Implementation of the main application function and mainApplication class.
 *
 * @par Project
 * This is a part of project realized on Warsaw University of Technology
@@ -35,7 +35,7 @@ using namespace Wt;
  * @brief A game application widget supply to client browswer.
  * @details There is one this type object per one client session.
  */
-class ChatApplication : public WApplication
+class GameApplication : public WApplication
 {
 public:
   /**
@@ -45,22 +45,19 @@ public:
   * @param[in] env - Environment variable
   * @param[in] server - the server object.
    */
-  ChatApplication(const WEnvironment& env, GameServer& server);
+  GameApplication(const WEnvironment& env, GameServer& server);
 
 private:
   GameServer& server_;
 
-  /*! \brief Add another chat client.
-   */
-  //void addChatWidget();
 };
 
-ChatApplication::ChatApplication(const WEnvironment& env,
+GameApplication::GameApplication(const WEnvironment& env,
 				 GameServer& server)
   : WApplication(env),
     server_(server)
 {
-  setTitle("Wt Chat");
+  setTitle("Noughts and Crosses Game");
   useStyleSheet("app.css");
 
   messageResourceBundle().use(appRoot() + "gameIntro");
@@ -68,61 +65,12 @@ ChatApplication::ChatApplication(const WEnvironment& env,
   root()->addWidget(new WText(WString::tr("introduction")));
 
   // creating main game widget
-  GameWidget *chatWidget = new GameWidget(server_, root());
-  chatWidget->setStyleClass("chat");
+  GameWidget *gameWidget = new GameWidget(server_, root());
+  gameWidget->setStyleClass("chat");
 
   root()->addWidget(new WText(WString::tr("details")));
 
-  //WPushButton *b = new WPushButton("I'm schizophrenic ...", root());
-  //b->clicked().connect(b, &WPushButton::hide);
-  //b->clicked().connect(this, &ChatApplication::addChatWidget);
 }
-
-//void ChatApplication::addChatWidget()
-//{
-//  SimpleChatWidget *chatWidget2 = new SimpleChatWidget(server_, root());
-//  chatWidget2->setStyleClass("chat");
-//}
-
-
-//class ChatWidget : public WApplication
-//{
-//public:
-//  ChatWidget(const WEnvironment& env, SimpleChatServer& server);
-//
-//private:
-//  JSignal<WString> login_;
-//};
-//
-//ChatWidget::ChatWidget(const WEnvironment& env, SimpleChatServer& server)
-//  : WApplication(env),
-//    login_(this, "login")
-//{
-//  setCssTheme("");
-//  useStyleSheet("chatwidget.css");
-//  useStyleSheet("chatwidget_ie6.css", "lt IE 7");
-//
-//  const std::string *div = env.getParameter("div");
-//  std::string defaultDiv = "div";
-//  if (!div)
-//   div = &defaultDiv;
-//
-//  if (div) {
-//    setJavaScriptClass(*div);
-//    PopupChatWidget *chatWidget = new PopupChatWidget(server, *div);
-//    bindWidget(chatWidget, *div);
-//
-//    login_.connect(chatWidget, &PopupChatWidget::setName);
-//
-//    std::string chat = javaScriptClass();
-//    doJavaScript("if (window." + chat + "User) "
-//		 + chat + ".emit(" + chat + ", 'login', " + chat + "User);"
-//		 + "document.body.appendChild(" + chatWidget->jsRef() + ");");
-//  } else {
-//    std::cerr << "Missing: parameter: 'div'" << std::endl;
-//    quit();
-//  }
-//}
 
 /**
  * @brief Callback function require by Wt library to provide an widget object
@@ -135,13 +83,8 @@ ChatApplication::ChatApplication(const WEnvironment& env,
 WApplication *createApplication(const WEnvironment& env,
 				GameServer& server)
 {
-  return new ChatApplication(env, server);
+  return new GameApplication(env, server);
 }
-
-//WApplication *createWidget(const WEnvironment& env, SimpleChatServer& server)
-//{
-//  return new ChatWidget(env, server);
-//}
 
 /**
  * @brief The main application function.
@@ -150,7 +93,7 @@ WApplication *createApplication(const WEnvironment& env,
 int main(int argc, char **argv)
 {
   Wt::WServer server(argv[0]);
-  GameServer chatServer(server);
+  GameServer gameServer(server);
 
   server.setServerConfiguration(argc, argv, WTHTTP_CONFIGURATION);
 
@@ -160,10 +103,7 @@ int main(int argc, char **argv)
    */
   server.addEntryPoint(Wt::Application,
 		       boost::bind(createApplication, _1,
-				   boost::ref(chatServer)));
-  //server.addEntryPoint(Wt::WidgetSet,
-		//       boost::bind(createWidget, _1,
-		//		   boost::ref(chatServer)), "/chat.js");
+				   boost::ref(gameServer)));
 
   if (server.start()) {
     int sig = Wt::WServer::waitForShutdown();

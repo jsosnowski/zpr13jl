@@ -209,8 +209,8 @@ void GameWidget::render(WFlags<RenderFlag> flags)
 bool GameWidget::startChat(const WString& user)
 {
   /*
-   * When logging in, we pass our processChatEvent method as the function that
-   * is used to indicate a new chat event for this user.
+   * When logging in, we pass our processGEvent method as the function that
+   * is used to indicate a new game event for this user.
    */
   if (server_.login(user)) {
     loggedIn_ = true;
@@ -423,13 +423,6 @@ void GameWidget::sendInvitation()
 	}
 }
 
-//void GameWidget::inviteClick()
-//{
-//	std::cout << std::endl;
-//	std::cout << "$$$$$$$$$$$ clicked $$$$$$$$$$";
-//	std::cout << userBox_->currentText() << std::endl;
-//	std::cout << std::endl;
-//}
 
 void GameWidget::newMessage()
 { }
@@ -510,8 +503,8 @@ void GameWidget::processGEvent(const GEvent& event)
   WApplication *app = WApplication::instance();
 
   /*
-   * This is where the "server-push" happens. The chat server posts to this
-   * event from other sessions, see SimpleChatServer::postChatEvent()
+   * This is where the "server-push" happens. The game server posts to this
+   * event from other sessions, see GameServer::postGEvent()
    */
 
   /*
