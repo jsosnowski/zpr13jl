@@ -482,6 +482,7 @@ void GameWidget::rejectGame()
 {
 	clearInvitation();
 	this->messages_->clear();
+	tmpOpponent = WString::Empty; 
 	server_.initGameAns(this,GEvent::GReject, user_);
 }
 
@@ -496,6 +497,7 @@ void GameWidget::showRejectedMsg(const WString &userName)
 	messages_->addWidget(new WText("user: <b>"
 			+ userName + "</b> rejected your invitation"));
 	messages_->addWidget(new WBreak());
+	tmpOpponent = WString::Empty;
 }
 
 void GameWidget::processGEvent(const GEvent& event)
@@ -553,37 +555,42 @@ void GameWidget::processGEvent(const GEvent& event)
 	  beginGame();
   }
 
+  // if somebody is logout we must check if it is not our opponent
   if(event.type() == GEvent::Logout) {
-	  // powinnismy reagowac w zaleznosci od stanu w jakim znajduje sie w danej chwili dany klient
-	  // np jezeli event.user() != user_ -> no to znaczy ze jakis user sie wylogowal
-	  // no i jesli prowadzilismy z nim rozgrywke lub jesli czekalismy na rozgrywke od niego no to lipa
-	  
-	  // niestety ktos bedzie musial przechowywac swoj stan oraz pamietac z kim chce grac i z kim obecnie gra
-	  // moze to robic ta nowa klasa odpowiedzialna za caly Widget gry
-	  // i tutaj bysmy wywolywali metody z tej klasy - to jest chyba dobra opcja
+	  if (event.user() == tmpOpponent) {
+		  WString out("<span class='chat-info'>Your opponent: <b>");
+		  out += tmpOpponent;
+		  out += "</b> logged out so you win this game. </span>";
 
-	  /*
-	  if (event.user() == boardWidget_->oponent()) {
-		delete boardWidget_; // niech destruktor wyczysci widok okna gry - zeby znow dalo sie zaczac gre z kims innym
+		  messages_->addWidget(new WText(out));
+		  messages_->addWidget(new WBreak());
+		  boardWidget_->setDisabled(true);
+		  userBox_->setDisabled(false);
+		  inviteButton->setDisabled(false);
+		  userList_->setDisabled(false);
+		  tmpOpponent = WString::Empty;
 	  }
-	  */
   }
 
-  if (event.type() == GEvent::PEvent && !event.user().empty())
+  // if game is playing now - the PEvent events occurs
+  if (event.type() == GEvent::PEvent && !event.user().empty()) //empty user means only unlock right panel
 	  boardWidget_->processPEvent(event.getPEvent());
 
+  // if it is game end we must unblock right panel
   if (event.type() == GEvent::PEvent && event.getPEvent().ifEndOfGame()) {
 	  userBox_->setDisabled(false);
 	  inviteButton->setDisabled(false);
 	  userList_->setDisabled(false);
+	  tmpOpponent = WString::Empty;
   }
 
+  // display boolean choose if we should print some message on screen or add new user
   bool display = event.type() != GEvent::Message
     || !userList_
     || (users_.find(event.user()) != users_.end() && users_[event.user()]);
 
   if (display) {
-    WText *w = new WText(messages_);
+	  WText *w = new WText(messages_);
 
     /*
      * If it fails, it is because the content wasn't valid XHTML
