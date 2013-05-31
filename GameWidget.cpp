@@ -125,7 +125,7 @@ void GameWidget::logout()
 }
 
 void GameWidget::createLayout(WWidget *messages, WWidget *userList,
-				    WWidget *messageEdit,
+				    /*WWidget *messageEdit,*/
 				    WWidget *sendButton, WWidget *logoutButton)
 {
   /*
@@ -165,8 +165,8 @@ void GameWidget::createLayout(WWidget *messages, WWidget *userList,
   vLayout->addLayout(hLayout, 1);
 
   // Add widget to vertical layout with stretch = 0
-  vLayout->addWidget(messageEdit);
-  messageEdit->setStyleClass("chat-noedit");
+  vLayout->addWidget(messageEditArea_);
+  messageEditArea_->setStyleClass("foot-noedit");
 
   // Create a horizontal layout for the buttons.
   hLayout = new WHBoxLayout();
@@ -196,7 +196,7 @@ void GameWidget::render(WFlags<RenderFlag> flags)
   if (flags & RenderFull) {
     if (loggedIn()) {
       /* Handle a page refresh correctly */
-      messageEdit_->setText(WString::Empty);
+      //messageEdit_->setText(WString::Empty);
       doJavaScript("setTimeout(function() { "
 		   + messages_->jsRef() + ".scrollTop += "
 		   + messages_->jsRef() + ".scrollHeight;}, 0);");
@@ -224,18 +224,20 @@ bool GameWidget::startChat(const WString& user)
 
     messages_ = new WContainerWidget();
     userList_ = new WContainerWidget();
-    messageEdit_ = new WTextArea();
-    messageEdit_->setRows(2);
+	messageEditArea_ = new WContainerWidget();
+    //messageEdit_ = new WTextArea();
+    //messageEdit_->setRows(2);
     //messageEdit_->setFocus();
 
     // Display scroll bars if contents overflows
     messages_->setOverflow(WContainerWidget::OverflowAuto);
     userList_->setOverflow(WContainerWidget::OverflowAuto);
+	messageEditArea_->setOverflow(WContainerWidget::OverflowAuto);
 
     sendButton_ = new WPushButton("Send");
     WPushButton *logoutButton = new WPushButton("Logout");
 
-    createLayout(messages_, userList_, messageEdit_, sendButton_, logoutButton);
+    createLayout(messages_, userList_, /*messageEdit_,*/ sendButton_, logoutButton);
 
     /*
      * Connect event handlers:
@@ -249,22 +251,22 @@ bool GameWidget::startChat(const WString& user)
     // Create a JavaScript 'slot' (JSlot). The JavaScript slot always takes
     // 2 arguments: the originator of the event (in our case the
     // button or text area), and the JavaScript event object.
-    clearInput_.setJavaScript
+    /*clearInput_.setJavaScript
       ("function(o, e) { setTimeout(function() {"
        "" + messageEdit_->jsRef() + ".value='';"
-       "}, 0); }");
+       "}, 0); }");*/
 
     // Bind the C++ and JavaScript event handlers.
     sendButton_->clicked().connect(this, &GameWidget::send);
-    messageEdit_->enterPressed().connect(this, &GameWidget::send);
+    //messageEdit_->enterPressed().connect(this, &GameWidget::send);
     sendButton_->clicked().connect(clearInput_);
-    messageEdit_->enterPressed().connect(clearInput_);
-    sendButton_->clicked().connect(messageEdit_, &WLineEdit::setFocus);
-    messageEdit_->enterPressed().connect(messageEdit_, &WLineEdit::setFocus);
+    //messageEdit_->enterPressed().connect(clearInput_);
+    //sendButton_->clicked().connect(messageEdit_, &WLineEdit::setFocus);
+    //messageEdit_->enterPressed().connect(messageEdit_, &WLineEdit::setFocus);
 
     // Prevent the enter from generating a new line, which is its default
     // action
-    messageEdit_->enterPressed().preventDefaultAction();
+    //messageEdit_->enterPressed().preventDefaultAction();
 
     logoutButton->clicked().connect(this, &GameWidget::logout);
 
@@ -296,8 +298,8 @@ bool GameWidget::startChat(const WString& user)
 
 void GameWidget::send()
 {
-  if (!messageEdit_->text().empty())
-    server_.sendMessage(user_, messageEdit_->text());
+  //if (!messageEdit_->text().empty())
+    //server_.sendMessage(user_, messageEdit_->text());
 }
 
 void GameWidget::updateUsersOld()
@@ -590,7 +592,7 @@ void GameWidget::processGEvent(const GEvent& event)
     || (users_.find(event.user()) != users_.end() && users_[event.user()]);
 
   if (display) {
-	  WText *w = new WText(messages_);
+	  WText *w = new WText();
 
     /*
      * If it fails, it is because the content wasn't valid XHTML
@@ -606,14 +608,21 @@ void GameWidget::processGEvent(const GEvent& event)
     /*
      * Leave no more than 100 messages in the back-log
      */
-    if (messages_->count() > 100)
-      delete messages_->children()[0];
+    if (messageEditArea_->count() > 100)
+      delete messageEditArea_->children()[0];
+
+	// if insert message is not empty, display it
+	if (!w->text().empty())
+		messageEditArea_->addWidget(w);
 
     /*
      * Little javascript trick to make sure we scroll along with new content
      */
     app->doJavaScript(messages_->jsRef() + ".scrollTop += "
 		       + messages_->jsRef() + ".scrollHeight;");
+
+	app->doJavaScript(messageEditArea_->jsRef() + ".scrollTop += "
+	       + messages_->jsRef() + ".scrollHeight;");
 
     /* If this message belongs to another user, play a received sound */
     if (event.user() != user_ && messageReceived_)

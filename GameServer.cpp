@@ -145,8 +145,8 @@ bool GameServer::disconnect(Client *client)
   boost::recursive_mutex::scoped_lock lock(mutex_);
 
   // delete client from game structures
-  fighters_.erase(client);
-  prepareFighters_.erase(client);
+  //fighters_.erase(client);
+  //prepareFighters_.erase(client);
 
   return clients_.erase(client) == 1;
 }
@@ -248,15 +248,17 @@ bool GameServer::changeName(const WString& user, const WString& newUser)
 
 WString GameServer::suggestGuest()
 {
-  boost::recursive_mutex::scoped_lock lock(mutex_);
+  //boost::recursive_mutex::scoped_lock lock(mutex_);
 
-  for (int i = 1;; ++i) {
-    std::string s = "guest " + boost::lexical_cast<std::string>(i);
+  static int i = 0;
+
+  //for (int i = 1;; ++i) {
+    std::string s = "guest " + boost::lexical_cast<std::string>(i++);
     WString ss = s;
 
-    if (users_.find(ss) == users_.end())
+  //  if (users_.find(ss) == users_.end())
       return ss;
-  }
+  //}
 }
 
 void GameServer::sendMessage(const WString& user, const WString& message)

@@ -92,7 +92,7 @@ public:
 
 protected:
   virtual void createLayout(Wt::WWidget *messages, Wt::WWidget *userList,
-			    Wt::WWidget *messageEdit,
+			    /*Wt::WWidget *messageEdit,*/
 			    Wt::WWidget *sendButton, Wt::WWidget *logoutButton);
 
   virtual void updateUsers();
@@ -121,7 +121,7 @@ private:
 
   Wt::WContainerWidget *messages_;
   Wt::WContainerWidget *messageEditArea_;
-  Wt::WTextArea        *messageEdit_;
+  //Wt::WTextArea        *messageEdit_;
   Wt::WPushButton      *sendButton_;
   Wt::WContainerWidget *userList_;
   Wt::WSelectionBox	   *userBox_;
