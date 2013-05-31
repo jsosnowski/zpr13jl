@@ -2,7 +2,7 @@ gnore builds
 build/
 
 #ignore doxygen documentation
-doc/
+doxygen/
 
 # Compiled source #
 ###################
