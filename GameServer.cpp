@@ -84,10 +84,8 @@ bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 {
 	boost::recursive_mutex::scoped_lock lock(mutex_);
 
+	// error if client doesn't play with anybody
 	if (prepareFighters_.count(client) != 1) {
-		std::cout<<std::endl;
-		std::cout << "Gracz z nikim nie gra...";
-		std::cout<<std::endl;
 		return false;
 	}
 

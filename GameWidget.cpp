@@ -477,8 +477,10 @@ void GameWidget::sendAccept()
 	clearInvitation();
 	this->messages_->clear();
 	messages_->addWidget(new WText("Enjoy play:"));
-	server_.initGameAns(this,GEvent::GAccept, user_);
-	boardWidget_ = new BoardWidget(user_, tmpOpponent, server_, BoardWidget::Crosses, messages_);
+	if(server_.initGameAns(this,GEvent::GAccept, user_))
+		boardWidget_ = new BoardWidget(user_, tmpOpponent, server_, BoardWidget::Crosses, messages_);
+	else
+		messages_->addWidget(new WText("Error occurs while game init. Please logout and login again"));
 	// after game started, the userList is no necessary
 	userList_->disable(); // it will be enable after game end
 }
