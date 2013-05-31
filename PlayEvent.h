@@ -24,12 +24,20 @@
 
 /**
 * @brief Class which store Play Event
-* @detail This event is associated only with game.
+* @details This event is associated only with game.
 **/
 class PlayEvent
 {
 public:
-	enum PEvent { None, Move, Win, Draw, Pass };
+  /** 
+  * @brief Enumeration for the event type.
+  */
+	enum PEvent { 
+		None, /**< None event is store in this object */
+		Move, /**< Move event - click X or O */
+		Win,  /**< Somebody wins event */
+		Draw, /**< Draw is happen */
+		Pass  /**< Somebody pass game. */};
 
 	/**
 	* @brief Default constructor. Build event object with error state associated.
@@ -78,7 +86,7 @@ private:
 	int field_;
 };
 
-/*@{*/
+/*@}*/
 
 #endif /* PLAYEVENT_H_ */
 

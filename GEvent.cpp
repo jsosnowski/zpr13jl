@@ -1,11 +1,11 @@
 /**
-* @file GameEvent.cpp
+* @file GEvent.cpp
 *
 * @date 29-05-2013
 *
 * @author Gadawski £ukasz, Sosnowski Jacek
 *
-* @brief Implementation of the GameEvent class.
+* @brief Implementation of the GEvent class.
 *
 * @par Project
 * This is a part of project realized on Warsaw University of Technology

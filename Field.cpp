@@ -1,9 +1,18 @@
-/*
- * Field.cpp
- *
- *  Created on: May 28, 2013
- *      Author: lgadawski
- */
+/**
+* @file Field.cpp
+*
+* @date 29-05-2013
+*
+* @author Gadawski £ukasz, Sosnowski Jacek
+*
+* @brief Implementation of the Field class.
+*
+* @par Project
+* This is a part of project realized on Warsaw University of Technology
+* on ZPR lectures. Project was created to provide noughts and crosses game
+* implementation. The application consists of server process wich afford 
+* widget object with all game functionality to each client session.
+*/
 
 #include "Field.h"
 

@@ -1,5 +1,5 @@
 /**
-* @file mainApp.h
+* @file mainApp.cpp
 *
 * @date 29-05-2013
 *
@@ -31,12 +31,19 @@ using namespace Wt;
  */
 /*@{*/
 
-/*! \brief A chat demo application.
+/**
+ * @brief A game application widget supply to client browswer.
+ * @details There is one this type object per one client session.
  */
 class ChatApplication : public WApplication
 {
 public:
-  /*! \brief Create a new instance.
+  /**
+  * @brief Create a new instance of application object.
+  * @details This create first widget and include GameWidget
+  *          which provide all visual structure (such clients list etc)
+  * @param[in] env - Environment variable
+  * @param[in] server - the server object.
    */
   ChatApplication(const WEnvironment& env, GameServer& server);
 
@@ -54,12 +61,13 @@ ChatApplication::ChatApplication(const WEnvironment& env,
     server_(server)
 {
   setTitle("Wt Chat");
-  useStyleSheet("chatapp.css");
+  useStyleSheet("app.css");
 
-  messageResourceBundle().use(appRoot() + "simplechat");
+  messageResourceBundle().use(appRoot() + "gameIntro");
 
   root()->addWidget(new WText(WString::tr("introduction")));
 
+  // creating main game widget
   GameWidget *chatWidget = new GameWidget(server_, root());
   chatWidget->setStyleClass("chat");
 
@@ -76,8 +84,7 @@ ChatApplication::ChatApplication(const WEnvironment& env,
 //  chatWidget2->setStyleClass("chat");
 //}
 
-///*! \brief A chat application widget.
-// */
+
 //class ChatWidget : public WApplication
 //{
 //public:
@@ -117,6 +124,14 @@ ChatApplication::ChatApplication(const WEnvironment& env,
 //  }
 //}
 
+/**
+ * @brief Callback function require by Wt library to provide an widget object
+ * @details In our case this create all visual boards for client browswer.
+ * @param[in] env - Environment variable
+ * @param[in] server - the server object.
+ * @return WApplication pointer to new application object which is associated with
+ *         client session.
+**/
 WApplication *createApplication(const WEnvironment& env,
 				GameServer& server)
 {
@@ -128,6 +143,10 @@ WApplication *createApplication(const WEnvironment& env,
 //  return new ChatWidget(env, server);
 //}
 
+/**
+ * @brief The main application function.
+ * @details This create server process and entry points for clients sessions.
+**/
 int main(int argc, char **argv)
 {
   Wt::WServer server(argv[0]);

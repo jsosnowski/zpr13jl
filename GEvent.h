@@ -1,11 +1,11 @@
 /**
-* @file GameEvent.h
+* @file GEvent.h
 *
 * @date 29-05-2013
 *
 * @author Gadawski £ukasz, Sosnowski Jacek
 *
-* @brief Implementation of the GameEvent class.
+* @brief Implementation of the GEvent class.
 *
 * @par Project
 * This is a part of project realized on Warsaw University of Technology
@@ -28,37 +28,58 @@
  */
 /*@{*/
 
-/*! \brief Encapsulate a game event.
+/**
+ * @brief Encapsulate a game or communication event.
  */
 class GEvent
 {
 public:
-  /*! \brief Enumeration for the event type.
+  /** 
+  * @brief Enumeration for the event type.
    */
-  typedef enum GEType { Login, Logout, Rename, Message,
-	  GOffer, GAccept, GReject, PEvent }GEType;
+  enum GEType { 
+	  Login,  /**< Login by user() */
+	  Logout, /**< Logout by user() */
+	  Rename, /**< Rename user name */
+	  Message,/**< Plain Message */
+	  GOffer, /**< Game offer from user() */
+	  GAccept,/**< Game offer accept by user() */
+	  GReject,/**< Game offer reject by user() */
+	  PEvent  /**< Play Event store in event */
+  };
 
-  /*! \brief Get the event type.
+  /**
+  * @brief Get the event type.
+  * @return GEType - type of event which is store in this object.
    */
   GEType type() const { return type_; }
 
-  /*! \brief Get the user who caused the event.
+  /**
+  * @brief Get the user who caused the event.
+  * @return Wt::WString which is the name of user from come event.
    */
   const Wt::WString& user() const { return user_; }
 
-  /*! \brief Get the message of the event.
+  /**
+  * @brief Get the message of the event.
+  * @return Wt::WString of plain message text.
    */
   const Wt::WString& message() const { return message_; }
 
-  /*! \brief Get the extra data for this event.
+  /**
+  * @brief Get the extra data for this event.
    */
   const Wt::WString& data() const { return data_; }
 
-  /*! \brief Get PlayEvent object
+  /**
+  * @brief Get PlayEvent object
+  * @details It is important only if type() == PEvent
+  * @return PlayEvent object which contains event associated only with game.
   */
   PlayEvent getPEvent() const {return pEvent_; }
 
-  /*! \brief Get the message formatted as HTML, rendered for the given user.
+  /**
+  * @brief Get the message formatted as HTML, rendered for the given user.
    *
    * The \p format indicates how the message should be formatted.
    */
@@ -79,20 +100,37 @@ private:
     : type_(Message), user_(user), message_(message)
   { }
 
+  /**
+  * @brief Constructs event object which store GEvent situations.
+  * @details This include every communication situations.
+  * @param[in] type GEType which telling what situation happen.
+  * @param[in] user is the user who caused this event
+  * @param[in] data is an extra data associate with this event
+  *            usually and by default it is empty WString.
+  **/
   GEvent(GEType type, const Wt::WString& user,
 	    const Wt::WString& data = Wt::WString::Empty)
     : type_(type), user_(user), data_(data)
   { }
 
+  /**
+  * @brief Construct event object which store PlayEvent situations
+  * @param[in] user is name of user which cause this event sytuation.
+  * @param[in] pE is an event which occurs during game playing
+  **/
   GEvent(const Wt::WString& user,
 	    PlayEvent pE)
 		:type_(PEvent), user_(user), pEvent_(pE), 
 		message_(Wt::WString("PlayEvent")), data_(Wt::WString::Empty)
   { }
 
+  /**
+  * @brief Friendship because only GameServer should have priviliges to create GEvent objects.
+  * @details This restriction is used becouse only server responds to communication between clients sessions
+  **/
   friend class GameServer;
 };
 
-/*@{*/
+/*@}*/
 
 #endif /* GEVENT_H_ */

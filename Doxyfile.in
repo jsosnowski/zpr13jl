@@ -16,7 +16,7 @@
 
 PROJECT_NAME      = "ZPR Project"
 PROJECT_NUMBER         = 
-OUTPUT_DIRECTORY  = documentation
+OUTPUT_DIRECTORY  = doxygen
 CREATE_SUBDIRS         = NO
 OUTPUT_LANGUAGE        = English
 
@@ -335,8 +335,7 @@ RECURSIVE              = YES
 # The EXCLUDE tag can be used to specify files and/or directories that should 
 # excluded from the INPUT source files. This way you can easily exclude a 
 # subdirectory from a directory tree whose root is specified with the INPUT tag.
-EXCLUDE                = 	@CMAKE_SOURCE_DIR@/Utilities/include/FileTree.h \
-							@CMAKE_SOURCE_DIR@/Utilities/src/FileTree.cpp
+EXCLUDE                = 	
 
 # The EXCLUDE_SYMLINKS tag can be used select whether or not files or 
 # directories that are symbolic links (a Unix filesystem feature) are excluded 
@@ -861,7 +860,9 @@ DOT_IMAGE_FORMAT       = png
 
 # The tag DOT_PATH can be used to specify the path where the dot tool can be 
 # found. If left blank, it is assumed the dot tool can be found in the path.
+# Wpisz poprawna sciezke do programu dot (TODO in different operation system)
 DOT_PATH               = /usr/local/bin
+#DOT_PATH               = E:/Programs/Graphviz/bin
 
 # The DOTFILE_DIRS tag can be used to specify one or more directories that 
 # contain dot files that are included in the documentation (see the 

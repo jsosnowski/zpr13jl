@@ -1,9 +1,18 @@
-/*
- * BoardWidget.h
- *
- *  Created on: May 27, 2013
- *      Author: lgadawski
- */
+/**
+* @file BoardWidget.h
+*
+* @date 29-05-2013
+*
+* @author Gadawski £ukasz, Sosnowski Jacek
+*
+* @brief Implementation of the BoardWidget class.
+*
+* @par Project
+* This is a part of project realized on Warsaw University of Technology
+* on ZPR lectures. Project was created to provide noughts and crosses game
+* implementation. The application consists of server process wich afford 
+* widget object with all game functionality to each client session.
+*/
 
 #ifndef BOARDWIDGET_H_
 #define BOARDWIDGET_H_
@@ -27,7 +36,8 @@ class Field;
 /*@{*/
 
 /**
- * represents new widget for game board
+ * @brief Represents new widget for game board
+ * @details It produce visual board like:
  *  __________
  * |0 | 1 | 2 |
  * |3 | 4 | 5 |
@@ -79,7 +89,7 @@ private:
 	void setFieldText(int fieldNo, Wt::WString);
 };
 
-/*@{*/
+/*@}*/
 
 #endif /* BOARDWIDGET_H_ */
 
