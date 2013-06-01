@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the GameWidget class.
 *
@@ -108,7 +108,7 @@ void GameWidget::login()
     if (!messageReceived_)
       messageReceived_ = new WSound("sounds/message_received.mp3");
 
-    if (!startChat(name))
+    if (!startGame(name))
       statusMsg_->setText("Sorry, name '" + escapeText(name) +
 			  "' is already taken.");
   }
@@ -206,7 +206,7 @@ void GameWidget::render(WFlags<RenderFlag> flags)
   WContainerWidget::render(flags);
 }
 
-bool GameWidget::startChat(const WString& user)
+bool GameWidget::startGame(const WString& user)
 {
   /*
    * When logging in, we pass our processGEvent method as the function that

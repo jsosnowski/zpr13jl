@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the BoardWidget class.
 *
@@ -31,12 +31,21 @@ BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 				BoardWidget::Side::None, a));
 
 		fields_[a]->getButton()->clicked().connect(
-				boost::bind(&BoardWidget::markField, this, a));
+				boost::bind(&BoardWidget::checkField, this, a));
 
 		if((a+1) % BoardWidget::BOARD_SIZE == 0)	//cause 0 mod 0 == 0
 		{
 			this->addWidget(new Wt::WBreak());
 		}
+	}
+}
+
+void BoardWidget::checkField(int a)
+{
+	if (fields_[a]->getButton()->text() != Wt::WString("o") &&
+			fields_[a]->getButton()->text() != Wt::WString("x"))
+	{
+		markField(a);
 	}
 }
 

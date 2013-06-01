@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the BoardWidget class.
 *
@@ -74,9 +74,11 @@ private:
 	Side gameSide_;
 	/** fields vector */
 	std::vector<Field *> fields_;
-	/** binded functor to button clicked, causing button change
-	 * depend on game side
+	/**
+	 * binded functor to button clicked, causing button check
 	 */
+	void checkField(int);
+	/** marks field */
 	void markField(int);
 	/** marking foreign move on board */
 	void markForeignMove(int);

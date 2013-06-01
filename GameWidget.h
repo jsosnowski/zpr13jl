@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the GameWidget class.
 *
@@ -78,7 +78,7 @@ public:
    *
    * @return false if the user could not login.
    */
-  bool startChat(const Wt::WString& user);
+  bool startGame(const Wt::WString& user);
 
   void logout();
 
