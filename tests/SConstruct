@@ -23,6 +23,9 @@ env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 env.Program('test',[ #'mainApp.cpp', 'GameWidget.h','GameWidget.cpp',
 #'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp', 'BoardWidget.h', 'BoardWidget.cpp',
 'test_main.cpp',
- 'test.cpp',  '../Field.h', '../Field.cpp'
+ 'testField.cpp',
+# 'testServer.cpp', 
+ '../Field.h', '../Field.cpp'
+#, '../GameServer.h', '../GameServer.cpp'
 #,'PlayEvent.h' , 'PlayEvent.cpp'
 ])
