@@ -33,6 +33,11 @@ BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 		fields_[a]->getButton()->clicked().connect(
 				boost::bind(&BoardWidget::checkField, this, a));
 
+		if (gameSide_ == BoardWidget::Crosses)
+		{
+			disableAllFields(true);
+		}
+
 		if((a+1) % BoardWidget::BOARD_SIZE == 0)	//cause 0 mod 0 == 0
 		{
 			this->addWidget(new Wt::WBreak());
