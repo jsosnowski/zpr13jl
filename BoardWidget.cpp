@@ -207,7 +207,6 @@ void BoardWidget::setFieldText(int fieldNo, Wt::WString string)
 
 void BoardWidget::setFieldSide(int fieldNo, Side side)
 {
-//	fields_[fieldNo]->side_ = side;
 	fields_[fieldNo]->setSide(side);
 }
 

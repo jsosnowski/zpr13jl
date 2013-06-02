@@ -425,7 +425,6 @@ void GameWidget::sendInvitation()
 	}
 }
 
-
 void GameWidget::newMessage()
 { }
 
@@ -433,13 +432,6 @@ void GameWidget::updateUserOld()
 {
   WCheckBox *b = dynamic_cast<WCheckBox *>(sender());
   users_[b->text()] = b->isChecked();
-}
-
-void GameWidget::updateUser()
-{
-//  WSelectionBox *b = dynamic_cast<WSelectionBox *>(sender());
-
-//  users_[b->text()] = b->isChecked();
 }
 
 void GameWidget::drawInvitation(const GEvent &event)
