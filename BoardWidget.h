@@ -62,8 +62,6 @@ public:
 	static const int BOARD_SIZE = 3;
 	/** gets particular field */
 	Field * getField(int a)	const {return fields_[a];}
-	/** marks field */ //################### zlamanie hermetyzacji
-	void markField(int);
 
 private:
 	/** pointer to client */
@@ -78,12 +76,16 @@ private:
 	Side gameSide_;
 	/** fields vector */
 	std::vector<Field *> fields_;
+	/** marks field */
+	void markField(int);
 	/**
 	 * binded functor to button clicked, causing button check
 	 */
 	void checkField(const int);
 	/** marking foreign move on board */
 	void markForeignMove(const int);
+	/** check if is draw */
+	bool isDraw();
 	/** check if game is finished */
 	bool isFinished();
 	/** move causing field disable */

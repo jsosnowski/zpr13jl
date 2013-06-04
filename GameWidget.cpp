@@ -257,7 +257,6 @@ bool GameWidget::startGame(const WString& user)
        "}, 0); }");*/
 
     // Bind the C++ and JavaScript event handlers.
-    sendButton_->clicked().connect(this, &GameWidget::send);
     //messageEdit_->enterPressed().connect(this, &GameWidget::send);
     sendButton_->clicked().connect(clearInput_);
     //messageEdit_->enterPressed().connect(clearInput_);
@@ -294,12 +293,6 @@ bool GameWidget::startGame(const WString& user)
     return true;
   } else
     return false;
-}
-
-void GameWidget::send()
-{
-  //if (!messageEdit_->text().empty())
-    //server_.sendMessage(user_, messageEdit_->text());
 }
 
 void GameWidget::updateUsersOld()
@@ -353,47 +346,16 @@ void GameWidget::updateUsers()
 			userBox_->addItem(u);
 		});
 
-		/*userBox_->activated().connect(
-				this, &GameWidget::inviteClick);*/
 		inviteButton->clicked().connect(
 				this, &GameWidget::sendInvitation);
 
 		// set appropriate enablement state from previous widget
-		if (ifDisable) {
+		if (ifDisable)
+		{
 			userBox_->disable();
 			inviteButton->disable();
 			userList_->disable();
 		}
-
-
-//		BOOST_FOREACH(Wt::WString i, users)
-//		{
-//			std::cout << "ilosc: " << users.size() << std::endl;
-//			userBox_->addItem(i);
-//		}
-//
-//		UserMap oldUsers = users_;
-//		users_.clear();
-//
-//		for (GameServer::UserSet::iterator i = users.begin();
-//		 i != users.end(); ++i)
-//		{
-//	      WCheckBox *w = new WCheckBox(escapeText(*i), userList_);
-//	      w->setInline(false);
-//
-//	      UserMap::const_iterator j = oldUsers.find(*i);
-//	      if (j != oldUsers.end())
-//	    	 w->setChecked(j->second);
-//	      else
-//	    	  w->setChecked(true);
-//
-//	      users_[*i] = w->isChecked();
-//	      users_[*i] = true;
-//	      w->changed().connect(this, &GameWidget::updateUser);
-//
-//	      if (*i == user_)
-//		w->setStyleClass("chat-self");
-//		}
 	}
 }
 
@@ -534,8 +496,6 @@ void GameWidget::processGEvent(const GEvent& event)
 
   if(event.type() == GEvent::GOffer)
   {
-	  std::cout << std::endl;
-	  std::cout << " $$$$$$$$ ########### $$$$$$$$$$ " << std::endl;
 	  drawInvitation(event);
   }
 

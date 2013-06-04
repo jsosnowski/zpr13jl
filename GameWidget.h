@@ -126,7 +126,6 @@ private:
 
   /** @brief Slot associate with Login button. Cause login action */
   void login();
-  void send();
   void updateUserOld();
 
 

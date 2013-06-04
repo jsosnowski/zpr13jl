@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the GameServer class.
 *
@@ -80,7 +80,6 @@ bool GameServer::initGame(Client *client,
 
 bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 		const Wt::WString &clientName)
-//		, const Wt::WString &clientName, const Wt::WString &oponent)
 {
 	boost::recursive_mutex::scoped_lock lock(mutex_);
 
@@ -95,7 +94,8 @@ bool GameServer::initGameAns(Client *client, const GEvent::GEType ans,
 	if (prepareFighters_.count(op) != 1)
 		return false;
 
-	if (ans == GEvent::GEType::GAccept) {
+	if (ans == GEvent::GEType::GAccept)
+	{
 		postGEvent(GEvent(GEvent::GEType::GAccept, clientName),
 				clients_[prepareFighters_[client]].sessionId);
 
@@ -125,28 +125,24 @@ bool GameServer::sendPlayEvent(const Wt::WString& clientName, const PlayEvent pE
 		return false;
 	Client *client = names_clients_[clientName];
 
-	if (fighters_.count(client) != 0) {
+	if (fighters_.count(client) != 0)
+	{
 		Client *oponent = fighters_[client];
 		postGEvent(GEvent(clientName, pEvent), clients_[oponent].sessionId);
 
-		if (pEvent.ifEndOfGame()) {
+		if (pEvent.ifEndOfGame())
+		{
 			postGEvent(GEvent("", pEvent), clients_[client].sessionId);
 			remGameStructures(clientName);
 		}
-
 		return true;
 	}
-
 	return false;
 }
 
 bool GameServer::disconnect(Client *client)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
-
-  // delete client from game structures
-  //fighters_.erase(client);
-  //prepareFighters_.erase(client);
 
   return clients_.erase(client) == 1;
 }
@@ -155,7 +151,8 @@ bool GameServer::login(const WString& user)
 {
   boost::recursive_mutex::scoped_lock lock(mutex_);
   
-  if (users_.find(user) == users_.end()) {
+  if (users_.find(user) == users_.end())
+  {
     users_.insert(user);
 
     postGEvent(GEvent(GEvent::Login, user));
@@ -171,7 +168,8 @@ void GameServer::logout(const Wt::WString& user)
 
   UserSet::iterator i = users_.find(user);
 
-  if (i != users_.end()) {
+  if (i != users_.end())
+  {
     users_.erase(i);
 
 	  //if this user has game - delete all game structure
@@ -211,7 +209,6 @@ void GameServer::remGameStructures(const WString& user)
 			fighters_.erase(client);
 		}
 	}
-
 }
 
 bool GameServer::changeName(const WString& user, const WString& newUser)
@@ -228,7 +225,6 @@ bool GameServer::changeName(const WString& user, const WString& newUser)
 		  names_clients_.erase(user);
 	  }
   }
-
   
   UserSet::iterator i = users_.find(user);
 
@@ -252,13 +248,10 @@ WString GameServer::suggestGuest()
 
   static int i = 0;
 
-  //for (int i = 1;; ++i) {
-    std::string s = "guest " + boost::lexical_cast<std::string>(i++);
-    WString ss = s;
+  std::string s = "guest " + boost::lexical_cast<std::string>(i++);
+  WString ss = s;
 
-  //  if (users_.find(ss) == users_.end())
-      return ss;
-  //}
+  return ss;
 }
 
 void GameServer::sendMessage(const WString& user, const WString& message)

@@ -72,11 +72,16 @@ void BoardWidget::markField(const int a)
 	// sending to oponent info about move (done action)
 	server_.sendPlayEvent(clientName_, PlayEvent(PlayEvent::Move, a));
 
+	if(isDraw())
+	{
+		server_.sendPlayEvent(clientName_, PlayEvent(PlayEvent::Draw));
+		this->clear();
+		Wt::WString m("<span class='chat-info'> draw...</span>");
+		this->addWidget(new Wt::WText(m));
+	}
+
 	if(isFinished())
 	{
-		std::cout << std::endl;
-		std::cout << "!!!!!!!!!!!! KONIEC GRY !!!!!!!!!!!!";
-		std::cout << std::endl;
 		server_.sendPlayEvent(clientName_, PlayEvent(PlayEvent::Win));
 
 		this->clear();
@@ -84,6 +89,7 @@ void BoardWidget::markField(const int a)
 		Wt::WString m("<span class='chat-info'><b>You</b> win!!!</span>");
 		this->addWidget(new Wt::WText(m));
 	}
+
 }
 
 void BoardWidget::disableAllFields(bool flag)
@@ -105,6 +111,22 @@ void BoardWidget::markForeignMove(const int a)
 		setFieldText(a, Wt::WString("x"));
 	}
 	disableAllFields(false);
+}
+
+bool BoardWidget::isDraw()
+{
+	short count = 0;
+	BOOST_FOREACH(Field *f, fields_)
+	{
+		if(f->getButton()->text() == Wt::WString("o") ||
+				f->getButton()->text() == Wt::WString("x"))
+		{
+			++count;
+		}
+	}
+	if(count == 9)
+		return true;
+	return false;
 }
 
 bool BoardWidget::isFinished()
