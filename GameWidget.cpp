@@ -124,9 +124,7 @@ void GameWidget::logout()
   }
 }
 
-void GameWidget::createLayout(WWidget *messages, WWidget *userList,
-				    /*WWidget *messageEdit,*/
-				    WWidget *sendButton, WWidget *logoutButton)
+void GameWidget::createLayout(WWidget *messages, WWidget *userList, WWidget *logoutButton)
 {
   /*
    * Create a vertical layout, which will hold 3 rows,
@@ -172,9 +170,6 @@ void GameWidget::createLayout(WWidget *messages, WWidget *userList,
   hLayout = new WHBoxLayout();
 
   // Add button to horizontal layout with stretch = 0
-  hLayout->addWidget(sendButton);
-
-  // Add button to horizontal layout with stretch = 0
   hLayout->addWidget(logoutButton);
 
   // Add nested layout to vertical layout with stretch = 0
@@ -196,13 +191,11 @@ void GameWidget::render(WFlags<RenderFlag> flags)
   if (flags & RenderFull) {
     if (loggedIn()) {
       /* Handle a page refresh correctly */
-      //messageEdit_->setText(WString::Empty);
       doJavaScript("setTimeout(function() { "
 		   + messages_->jsRef() + ".scrollTop += "
 		   + messages_->jsRef() + ".scrollHeight;}, 0);");
     }
   }
-
   WContainerWidget::render(flags);
 }
 
@@ -225,47 +218,15 @@ bool GameWidget::startGame(const WString& user)
     messages_ = new WContainerWidget();
     userList_ = new WContainerWidget();
 	messageEditArea_ = new WContainerWidget();
-    //messageEdit_ = new WTextArea();
-    //messageEdit_->setRows(2);
-    //messageEdit_->setFocus();
 
     // Display scroll bars if contents overflows
     messages_->setOverflow(WContainerWidget::OverflowAuto);
     userList_->setOverflow(WContainerWidget::OverflowAuto);
 	messageEditArea_->setOverflow(WContainerWidget::OverflowAuto);
 
-    sendButton_ = new WPushButton("Send");
     WPushButton *logoutButton = new WPushButton("Logout");
 
-    createLayout(messages_, userList_, /*messageEdit_,*/ sendButton_, logoutButton);
-
-    /*
-     * Connect event handlers:
-     *  - click on button
-     *  - enter in text area
-     *
-     * We will clear the input field using a small custom client-side
-     * JavaScript invocation.
-     */
-
-    // Create a JavaScript 'slot' (JSlot). The JavaScript slot always takes
-    // 2 arguments: the originator of the event (in our case the
-    // button or text area), and the JavaScript event object.
-    /*clearInput_.setJavaScript
-      ("function(o, e) { setTimeout(function() {"
-       "" + messageEdit_->jsRef() + ".value='';"
-       "}, 0); }");*/
-
-    // Bind the C++ and JavaScript event handlers.
-    //messageEdit_->enterPressed().connect(this, &GameWidget::send);
-    sendButton_->clicked().connect(clearInput_);
-    //messageEdit_->enterPressed().connect(clearInput_);
-    //sendButton_->clicked().connect(messageEdit_, &WLineEdit::setFocus);
-    //messageEdit_->enterPressed().connect(messageEdit_, &WLineEdit::setFocus);
-
-    // Prevent the enter from generating a new line, which is its default
-    // action
-    //messageEdit_->enterPressed().preventDefaultAction();
+    createLayout(messages_, userList_, logoutButton);
 
     logoutButton->clicked().connect(this, &GameWidget::logout);
 
@@ -280,11 +241,6 @@ bool GameWidget::startGame(const WString& user)
       userList_ = 0;
     }
 
-    if (!sendButton_->parent()) {
-      delete sendButton_;
-      sendButton_ = 0;
-    }
-
     if (!logoutButton->parent())
       delete logoutButton;
 
@@ -293,37 +249,6 @@ bool GameWidget::startGame(const WString& user)
     return true;
   } else
     return false;
-}
-
-void GameWidget::updateUsersOld()
-{
-  if (userList_) {
-    userList_->clear();
-
-    GameServer::UserSet users = server_.users();
-
-    UserMap oldUsers = users_;
-    users_.clear();
-
-    for (GameServer::UserSet::iterator i = users.begin();
-	 i != users.end(); ++i) {
-      WCheckBox *w = new WCheckBox(escapeText(*i), userList_);
-
-      w->setInline(false);
-
-      UserMap::const_iterator j = oldUsers.find(*i);
-      if (j != oldUsers.end())
-	w->setChecked(j->second);
-      else
-	w->setChecked(true);
-
-      users_[*i] = w->isChecked();
-      w->changed().connect(this, &GameWidget::updateUserOld);
-
-      if (*i == user_)
-	w->setStyleClass("chat-self");
-    }
-  }
 }
 
 void GameWidget::updateUsers()
@@ -386,9 +311,6 @@ void GameWidget::sendInvitation()
 		messages_->addWidget(new WBreak());
 	}
 }
-
-void GameWidget::newMessage()
-{ }
 
 void GameWidget::updateUserOld()
 {
@@ -483,8 +405,6 @@ void GameWidget::processGEvent(const GEvent& event)
 
     updateUsers();
   }
-
-  newMessage();
 
   /*
    * Anything else doesn't matter if we are not logged in.

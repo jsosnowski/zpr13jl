@@ -81,12 +81,9 @@ public:
 
 protected:
   virtual void createLayout(Wt::WWidget *messages, Wt::WWidget *userList,
-			    /*Wt::WWidget *messageEdit,*/
-			    Wt::WWidget *sendButton, Wt::WWidget *logoutButton);
+			 Wt::WWidget *logoutButton);
 
   virtual void updateUsers();
-  virtual void updateUsersOld();
-  virtual void newMessage();
 
   virtual void render(Wt::WFlags<Wt::RenderFlag> flags);
 
@@ -110,8 +107,6 @@ private:
 
   Wt::WContainerWidget *messages_;
   Wt::WContainerWidget *messageEditArea_;
-  //Wt::WTextArea        *messageEdit_;
-  Wt::WPushButton      *sendButton_;
   Wt::WContainerWidget *userList_;
   Wt::WSelectionBox	   *userBox_;
 
