@@ -49,9 +49,42 @@ Za samą komunikację odpowiada mechanizm wykonywania metod po stronie sesji kli
 Dlatego podczas inicjowania połączenia klienta z serwerem musi on podać wskazanie na metodę ze swojego obiektu, która będzie przejmować przetwarzanie zdarzeń. Serwer dysponując jednoznaczną identyfikacją sesji klienckich za pomocą wskazań Client* oraz znając metody do których ma przekazywać zdarzenia jest w stanie pośredniczyć w komunikacji. Na pierwszy rzut oka wygląda ona jak zwykłe wywołania funkcji, ale w rzeczywistości te wywołania odbywają się w innych kontekstach i w ogólności na innych maszynach.
 Z punktu widzenia sieci pomiędzy serwerem i klientem nawiązywane jest połączenie TCP. Dlatego najbardziej kosztowny jest otwieranie strony – Three-way handshake z dodatkiem narzutu czasowego metod na poziomie logiki aplikacji do inicjowania połączenia: tworzenie obiektów sesji, wywołania metod logowania. Połączenie jest utrzymywane dzięki opcji keep-alive. W równych odstępach czasu wysyłane są pakiety heartbeat w celu sprawdzenia istnienia sesji.
 Koniec identyfikacji sesji klienta poprzez serwer następuje po wylogowaniu (użycie przycisku log out).
+\\
 
-\item \textbf{Testowanie} \\
-Wstępny plik testowy stworzony.
+\item \textbf{Uruchomienie}
+\begin{enumerate}
+\item Ubuntu \\
+Wymagania: Wt( $ \leq $ 3.3), gcc( $ \leq $ 4.7)[dla standardu c+11], scons, boost(testowane na wersji 1.53). \\
+Instalacja najbardziej aktualnej wersji Wt:
+
+sudo add-apt-repository ppa:pgquiles/wt \\
+sudo apt-get update \\
+sudo apt-get install witty witty-dev witty-doc witty-examples gcc g++ scons  \\
+
+Kompilacja: \\
+scons \\
+Uruchomienie na lokalnej maszynie: \\
+./game --docroot . --http-address 0.0.0.0 --http-port 9090\\
+Następnie wystarczy w przeglądarce połączyć się z serwerem, poprzez podanie adresu 0.0.0.0:9090
+
+
+\item Windows \\
+Kompilator mscv2012. \\ Konfiguracja środowiska w MS Visual Studio 2012: \\
+Debugowanie - Argumenty polecenia np na: --http-address=127.0.0.1 --http-port=9090 --deploy-path=/game --docroot=.
+
+C/C++ - Ogólne - Dodatkowe katalogi dołączenia: \\
+Dodać katalog z biblioteka Wt i boost \\
+
+Konsolidator - Ogólne - Dodatkowe katalogi biblioteki \\
+Katalog /stage/lib z folderu boost \\ 
+W tym samym panelu należy zaznaczyć 'Nie' przy opcji Połącz zależności biblioteki.
+
+Konsolidator - Wejście - Dodatkowe zależności:
+wtd.lib, wthttpd.lib.
+
+
+\end{enumerate}
+
 \end{enumerate}
 
 \end{document}
