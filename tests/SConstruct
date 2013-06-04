@@ -3,15 +3,19 @@ env = Environment()
 #       Add header search path
 env.Append(CPPPATH = ['/usr/include', '/usr/local/include'])
 
+#       Add compile-time flags
+env.Append(CCFLAGS=['-Wall','-g', '-pedantic'])
+
+
 # libraries to link against
 # Notice you dont need the '-l', since SCons is platform independent
 env.Append(LIBS=[
 #	'boost_test'
 	'boost_unit_test_framework',
-  'wt', 'wthttp', 'pthread'
-#  'boost_random', 'boost_regex', 'boost_signals',
-#  'boost_system', 'boost_thread', 'boost_filesystem',
-#  'boost_program_options', 'boost_date_time'
+  'wt', 'wthttp', 'pthread',
+  'boost_random', 'boost_regex', 'boost_signals',
+  'boost_system', 'boost_thread', 'boost_filesystem',
+  'boost_program_options', 'boost_date_time'
 ])
 
 env.Append(CXXFLAGS="-std=c++11")
@@ -23,6 +27,12 @@ env.Append(LIBPATH = ['/usr/lib','/usr/local/lib', '/opt/lib'])
 env.Program('test',[ #'mainApp.cpp', 'GameWidget.h','GameWidget.cpp',
 #'GameServer.h', 'GameServer.cpp', 'GEvent.h', 'GEvent.cpp', 'BoardWidget.h', 'BoardWidget.cpp',
 'test_main.cpp',
- 'test.cpp',  '../Field.h', '../Field.cpp'
-#,'PlayEvent.h' , 'PlayEvent.cpp'
+# 'testField.cpp',
+ 'testServer.cpp', 
+ '../Field.h', '../Field.cpp',
+ '../GameServer.h', '../GameServer.cpp',
+ '../GameWidget.h', '../GameWidget.cpp',
+ '../BoardWidget.h','../BoardWidget.cpp' 
+ ,'../PlayEvent.h' , '../PlayEvent.cpp',
+ '../GEvent.h', '../GEvent.cpp'
 ])

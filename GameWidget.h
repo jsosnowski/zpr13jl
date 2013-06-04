@@ -62,25 +62,6 @@ public:
   void disconnect();
 
   //void inviteClick();
-  /**
-  * @brief Sends game invitation (offer) to client which is choosen by right widget panel (from user list)
-  * @details Might not be done correctly for example when you want to invite yourself.
-  **/
-  void sendInvitation();
-
-  /**
-   * @brief Show a simple login screen.
-   */
-  void letLogin();
-
-  /**
-   * @brief Start a game for the given user.
-   *
-   * @return false if the user could not login.
-   */
-  bool startGame(const Wt::WString& user);
-
-  void logout();
 
   GameServer& server() { return server_; }
 
@@ -89,6 +70,14 @@ public:
 
   /** @brief Returns this user name */
   const Wt::WString& userName() const { return user_; }
+
+  /**
+   * @brief Start a game for the given user.
+   *
+   * @return false if the user could not login.
+   */
+  bool startGame(const Wt::WString& user);
+  BoardWidget * getBoardWidget() const {return boardWidget_;}
 
 protected:
   virtual void createLayout(Wt::WWidget *messages, Wt::WWidget *userList,
@@ -139,8 +128,18 @@ private:
   void login();
   void send();
   void updateUserOld();
-  void updateUser();
 
+
+  void logout();
+  /**
+   * @brief Show a simple login screen.
+   */
+  void letLogin();
+  /**
+  * @brief Sends game invitation (offer) to client which is choosen by right widget panel (from user list)
+  * @details Might not be done correctly for example when you want to invite yourself.
+  **/
+  void sendInvitation();
   /**
   * @brief Slot associate with Reject WPushButton
   * @details Send to opponent side that we don't want play with him.

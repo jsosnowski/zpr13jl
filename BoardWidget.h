@@ -60,6 +60,10 @@ public:
 	void processPEvent(const PlayEvent& eve);
 	/** def of board size */
 	static const int BOARD_SIZE = 3;
+	/** gets particular field */
+	Field * getField(int a)	const {return fields_[a];}
+	/** marks field */ //################### zlamanie hermetyzacji
+	void markField(int);
 
 private:
 	/** pointer to client */
@@ -77,19 +81,17 @@ private:
 	/**
 	 * binded functor to button clicked, causing button check
 	 */
-	void checkField(int);
-	/** marks field */
-	void markField(int);
+	void checkField(const int);
 	/** marking foreign move on board */
-	void markForeignMove(int);
+	void markForeignMove(const int);
 	/** check if game is finished */
 	bool isFinished();
 	/** move causing field disable */
 	void disableAllFields(bool flag);
 	/** sets side */
-	void setFieldSide(int fieldNo, Side);
+	void setFieldSide(const int fieldNo, Side);
 	/** sets button text */
-	void setFieldText(int fieldNo, Wt::WString);
+	void setFieldText(const int fieldNo, const Wt::WString&);
 };
 
 /*@}*/

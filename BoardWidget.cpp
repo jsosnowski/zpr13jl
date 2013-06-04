@@ -33,6 +33,11 @@ BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 		fields_[a]->getButton()->clicked().connect(
 				boost::bind(&BoardWidget::checkField, this, a));
 
+		if (gameSide_ == BoardWidget::Crosses)
+		{
+			disableAllFields(true);
+		}
+
 		if((a+1) % BoardWidget::BOARD_SIZE == 0)	//cause 0 mod 0 == 0
 		{
 			this->addWidget(new Wt::WBreak());
@@ -40,7 +45,7 @@ BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 	}
 }
 
-void BoardWidget::checkField(int a)
+void BoardWidget::checkField(const int a)
 {
 	if (fields_[a]->getButton()->text() != Wt::WString("o") &&
 			fields_[a]->getButton()->text() != Wt::WString("x"))
@@ -49,7 +54,7 @@ void BoardWidget::checkField(int a)
 	}
 }
 
-void BoardWidget::markField(int a)
+void BoardWidget::markField(const int a)
 {
 	if(this->gameSide_ == BoardWidget::Crosses)
 	{
@@ -89,7 +94,7 @@ void BoardWidget::disableAllFields(bool flag)
 	});
 }
 
-void BoardWidget::markForeignMove(int a)
+void BoardWidget::markForeignMove(const int a)
 {
 	if(this->gameSide_ == BoardWidget::Crosses)
 	{
@@ -195,14 +200,13 @@ bool BoardWidget::isFinished()
 	return false;
 }
 
-void BoardWidget::setFieldText(int fieldNo, Wt::WString string)
+void BoardWidget::setFieldText(const int fieldNo, const Wt::WString &string)
 {
 	fields_[fieldNo]->getButton()->setText(string);
 }
 
-void BoardWidget::setFieldSide(int fieldNo, Side side)
+void BoardWidget::setFieldSide(const int fieldNo, Side side)
 {
-//	fields_[fieldNo]->side_ = side;
 	fields_[fieldNo]->setSide(side);
 }
 
