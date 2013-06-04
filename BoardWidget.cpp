@@ -19,11 +19,11 @@
 
 BoardWidget::BoardWidget(const Wt::WString& client, const Wt::WString& opponent,
 		GameServer &serv, Side side, Wt::WContainerWidget *parent = 0)
-	: clientName_(client),
+	: Wt::WContainerWidget(parent),
+	  clientName_(client),
 	  opponent_(opponent),
 	  server_(serv),
-	  gameSide_(side),
-	  Wt::WContainerWidget(parent)
+	  gameSide_(side)
 {
 	for(int a = 0; a < pow(BoardWidget::BOARD_SIZE, 2) ; ++a)
 	{
@@ -68,7 +68,6 @@ void BoardWidget::markField(const int a)
 	}
 	disableAllFields(true);
 
-
 	// sending to oponent info about move (done action)
 	server_.sendPlayEvent(clientName_, PlayEvent(PlayEvent::Move, a));
 
@@ -78,6 +77,7 @@ void BoardWidget::markField(const int a)
 		this->clear();
 		Wt::WString m("<span class='chat-info'> draw...</span>");
 		this->addWidget(new Wt::WText(m));
+		return;
 	}
 
 	if(isFinished())

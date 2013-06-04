@@ -45,10 +45,10 @@ GameWidget::GameWidget(GameServer& server,
     server_(server),
     loggedIn_(false),
     userList_(0),
-    messageReceived_(0),
     userBox_(0),
     invitationContainer(0),
-    boardWidget_(0)
+    boardWidget_(0),
+    messageReceived_(0)
 {
   user_ = server_.suggestGuest();
   letLogin();
@@ -312,12 +312,6 @@ void GameWidget::sendInvitation()
 	}
 }
 
-void GameWidget::updateUserOld()
-{
-  WCheckBox *b = dynamic_cast<WCheckBox *>(sender());
-  users_[b->text()] = b->isChecked();
-}
-
 void GameWidget::drawInvitation(const GEvent &event)
 {
 	invitationContainer = new WContainerWidget(messages_);
@@ -363,7 +357,6 @@ void GameWidget::rejectGame()
 	tmpOpponent = WString::Empty; 
 	server_.initGameAns(this,GEvent::GReject, user_);
 }
-
 
 void GameWidget::clearInvitation()
 {

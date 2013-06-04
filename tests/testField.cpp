@@ -20,10 +20,16 @@ BOOST_AUTO_TEST_CASE(fieldTest)
 {
 	BOOST_REQUIRE(true);
 
-	Field field(new Wt::WPushButton("aa"), BoardWidget::Crosses, 3);
+	Field fieldX(new Wt::WPushButton("aa"), BoardWidget::Crosses, 3);
+	Field fieldO(new Wt::WPushButton("aa"), BoardWidget::Naughts, 4);
 
-	BOOST_CHECK(field.getPositionOnBoard() == 3);
-	BOOST_CHECK(field.getSide() == BoardWidget::Crosses);
+	BOOST_CHECK(fieldX.getPositionOnBoard() == 3);
+	BOOST_CHECK(fieldX.getSide() == BoardWidget::Crosses);
+	BOOST_CHECK(fieldX.getButton()->text() == "x");
+
+	BOOST_CHECK(fieldO.getPositionOnBoard() == 3);
+	BOOST_CHECK(fieldO.getSide() == BoardWidget::Naughts);
+	BOOST_CHECK(fieldO.getButton()->text() == "o");
 }
 BOOST_AUTO_TEST_SUITE_END()
 
