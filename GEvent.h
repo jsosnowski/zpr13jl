@@ -3,7 +3,7 @@
 *
 * @date 29-05-2013
 *
-* @author Gadawski £ukasz, Sosnowski Jacek
+* @author Gadawski ï¿½ukasz, Sosnowski Jacek
 *
 * @brief Implementation of the GEvent class.
 *
@@ -120,8 +120,8 @@ private:
   **/
   GEvent(const Wt::WString& user,
 	    PlayEvent pE)
-		:type_(PEvent), user_(user), pEvent_(pE), 
-		message_(Wt::WString("PlayEvent")), data_(Wt::WString::Empty)
+		:type_(PEvent), user_(user), data_(Wt::WString::Empty),
+		 message_(Wt::WString("PlayEvent")), pEvent_(pE)
   { }
 
   /**
